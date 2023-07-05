@@ -10,6 +10,10 @@ router.post('/login', clientController.login)
 
 router.post('/logout', clientController.logout)
 
+router.post('/SMS', clientController.SMS)
+
+router.post('/mdpcode', clientController.mdpcode)
+
 router.post('/verificationclt', clientController.verification)
 
 

@@ -5,7 +5,13 @@ const pageclient = require('../models/clientModel');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const randomText = require('random-text-generator');
+const { any } = require('joi');
 
+
+// TAm za nitesta message tam phone
+const accountSid = 'AC70c9c21e1b2d040670b7c4ee0a2468cc'; 
+const authToken = '2d56874ebe1e557f3c20f3adc623fa80'; 
+const izaho = require('twilio')(accountSid, authToken);
 
 
 
@@ -20,8 +26,8 @@ const transporter = nodemailer.createTransport({
     user: 'garagetahinalisoa@gmail.com',
     clientId: '644760103972-mo2ahkelp1i9i4t8v6655chbsod8tukr.apps.googleusercontent.com',
     clientSecret: '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',
-    refreshToken: '1//04f4LjDvpjoHeCgYIARAAGAQSNwF-L9IrDkz5ZzcFQ9mbFertwcY7CaHTHmCFUCD1Y5u76vY8ALfwLeuw_spcU6PLh6TKWrmkBV8',
-    accessToken: 'ya29.a0AWY7CkldeMxFe-4Sr08bLmbr6eNXN__Kr_T8zefnDPgw_IFOojEN7QZICN23saek5MReE_IJ-6vAqGwZ3GOKWrIVuHktoFJWKTHeby7EjYTS_8s67SbTx6ixfHInsk5DlcwnxAiEhA4EKLWFUPg4WHLLbt96aCgYKAQ0SARISFQG1tDrp22X-CznKUbZOvOO3tbLmhQ0163'
+    refreshToken: '1//04om-J-KNGonICgYIARAAGAQSNwF-L9IrLo-ygUJ5MPipCpvbLZV_2ajb_GBxIC-PqhOoJPEc7CEemjGOW17xKWdnyhZbzWavun0',
+    accessToken: 'ya29.a0AbVbY6OXSpR4RVYXO1UWKLqU4zcbA0ISn8EzomnMTLoO4cV_Afdg3K0KqtbUG6Mn7KFN4DAESB2-63yLcluie9aDdFVibzGuSUvOVV_eB40hA4UFFddO6E-lFBOVUQhkvV9lSc9WmpVO15iHaqK5W-SQ93ptaCgYKAZMSARISFQFWKvPl-pI2mCQIB7D3CO5apOJG_w0163'
   },
   tls: {
     rejectUnauthorized: false
@@ -38,6 +44,17 @@ const rondom = () => {
   return code;
 }
 
+//Mot de passe oublier
+const rondom2 = () => {
+  const characters = '0123456789';
+  let code = '';
+  for (let i =0; i < 6 ; i++) {
+    code+= characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return code;
+}
+
+
 // main work
 
 //login 
@@ -47,7 +64,7 @@ const login = async (req, res) => {
     const email = req.body.Email;
     const password = req.body.Password;
 
-    const client = await Client.findOne({ where: { Email: email } });
+    const client = await Client.findOne({ where: { Email: email }});
     if (!client) {
       return res.send({ status:false,message:'Vérifier bien votre email' });
     }
@@ -56,10 +73,16 @@ const login = async (req, res) => {
     if (!passwordMatch) {
       return res.send({ status:false,message:'Vérifier bien votre mot de passe' });
     }
-
+    
+    if (client.Validation != 1) {
+      return res.send({ status:false,message:'Code de validation non envoyer veuillez réinscire'});
+    }
+   
     const token = jwt.sign({ clientId: client.id }, 'secret_key', { expiresIn: '1h' });
 
     res.json({ status:true,token:token });
+    
+    
   } catch (error) {
     console.error(error);
     res.send("Une erreur s'est produite lors de la connexion.");
@@ -68,19 +91,9 @@ const login = async (req, res) => {
 
 // Deconnexion
 const logout = async (req, res) => {
-  try {
-    const token = req.headers.authorization.split(' ')[1]; // Récupérer le jeton depuis l'en-tête Authorization
-
-    // Supprimer le jeton d'authentification de la base de données
-    await TokenModel.findOneAndDelete({ token });
-
-    res.json({ status: true, message: "Déconnexion réussie" });
-  } catch (error) {
-    console.error(error);
-    res.send("Une erreur s'est produite lors de la déconnexion.");
-  }
+  res.status(200).json({ message: "Déconnexion réussie." });
+ 
 };
-
 
 const addClient = async (req, res) => {
   try {
@@ -105,14 +118,15 @@ const addClient = async (req, res) => {
     const mailOptions = {
       from: 'garagetahinalisoa@gmail.com',
       to: req.body.Email,
-      subject: 'Voila votre code de confirmation',
-      text: `Voila votre code : ${confirmationcode}` 
+      subject: 'Code de validation de compte',
+      text: `Bonjour cher client merci de s'inscrire veuillez confirmer votre compte avec ce code : ${confirmationcode}` 
     }
+
     transporter.sendMail(mailOptions, (error, info) => {
       if(error){
         console.error(error);
         res.send('Il y a une erreur sur l/envoie de mail');
-      }else{
+      } else {
         res.send({ statut:true, msg: 'Email envoyer' });
       }
     })
@@ -123,7 +137,26 @@ const addClient = async (req, res) => {
     res.status(500).send("Une erreur s'est produite lors de l'ajout du client.");
   }
 };
-  
+//Envoyer SMS
+const SMS = async (req, res) => {
+  const { destinataire, message } = req.body;
+
+  izaho.messages
+    .create({
+      body: message,
+      from: '+16183684641', // Remplacez par votre numéro de téléphone Twilio
+      to: destinataire
+    })
+    .then(message => {
+      console.log('Message envoyé avec succès');
+      res.send('Message envoyé avec succès');
+    })
+    .catch(error => {
+      console.error('Erreur lors de l\'envoi du message:', error);
+      res.status(500).send('Erreur lors de l\'envoi du message');
+    });
+}
+
 // Vérification de code de confirmation
 const verification = async (req, res) => {
   const {Email, confirmationcode } = req.body;
@@ -146,6 +179,28 @@ const verification = async (req, res) => {
   console.error('Erreur lors de vérificatio de confirmation', error);
   return res.status(500).json({message: 'Une erreur lors de vérification de code'})
 }
+}
+
+//Mot de passe oublié de le mandefa email
+const mdpcode = async (req, res) => {
+  const confirmationcode2 = rondom2();
+  const email = req.body.Email;
+
+  const mailOptions = {
+    from: 'garagetahinalisoa@gmail.com',
+    to: email,
+    subject: 'Code de mot de passe oublier',
+    text: `Voici le code : ${confirmationcode2}` 
+  }
+
+transporter.sendMail(mailOptions, (error, info) => {
+    if(error) {
+      console.error(error);
+      res.send({ statut:false, msg: 'Email non envoyer' });
+    } else {
+      res.send({ statut:true, msg: 'Email envoyer' });
+    }
+  })
 }
 
 // 2. Prendre tous les clients
@@ -187,4 +242,6 @@ module.exports = {
   login,
   verification,
   logout,
+  SMS,
+  mdpcode,
 }
