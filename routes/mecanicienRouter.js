@@ -8,5 +8,7 @@ router.post('/addMecanicien', mecanicienController.addMecanicien)
 
 router.post('/logout', mecanicienController.logout)
 
+router.post('/mdpcode', mecanicienController.mdpcode)
+
 
 module.exports = router

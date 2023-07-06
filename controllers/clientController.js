@@ -10,12 +10,13 @@ const { any } = require('joi');
 
 // TAm za nitesta message tam phone
 const accountSid = 'AC70c9c21e1b2d040670b7c4ee0a2468cc'; 
-const authToken = '2d56874ebe1e557f3c20f3adc623fa80'; 
+const authToken = 'a1f9a597b289528918b534ef003e2799'; 
 const izaho = require('twilio')(accountSid, authToken);
 
 
 // create main Model
 const Client = db.clients;
+const Admin = db.admins;
 
 //Transporter
 const transporter = nodemailer.createTransport({
@@ -138,21 +139,23 @@ const addClient = async (req, res) => {
 };
 //Envoyer SMS
 const SMS = async (req, res) => {
-  const { destinataire, message } = req.body;
+  const { destinataire } = req.body;
+
+  const admin = await Admin.findOne();
 
   izaho.messages
     .create({
-      body: message,
+      body: admin.Password,
       from: '+16183684641', // Remplacez par votre numéro de téléphone Twilio
       to: destinataire
     })
     .then(message => {
       console.log('Message envoyé avec succès');
-      res.send('Message envoyé avec succès');
+      res.send({ statut:true,message:'Le mot de passe a été envoyer' });
     })
     .catch(error => {
       console.error('Erreur lors de l\'envoi du message:', error);
-      res.status(500).send('Erreur lors de l\'envoi du message');
+      res.send({statut:false,message:'Le numéro n`est pas le votre' });
     });
 }
 

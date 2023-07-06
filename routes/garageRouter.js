@@ -8,5 +8,8 @@ router.post('/addGarage', garageController.addGarage)
 
 router.post('/logout', garageController.logout)
 
+router.post('/mdpcode', garageController.mdpcode)
+
+
 
 module.exports = router

@@ -144,10 +144,36 @@ const logout = async (req, res) => {
     res.status(200).json({ message: "Déconnexion réussie." });
    
 };
+
+
+
+//Mot de passe oublié de le mandefa email
+const mdpcode = async (req, res) => {
+  const confirmationcode2 = rondom2();
+  const email = req.body.Email;
+
+  const mailOptions = {
+    from: 'garagetahinalisoa@gmail.com',
+    to: email,
+    subject: 'Code de mot de passe oublier',
+    text: `Voici le code : ${confirmationcode2}` 
+  }
+
+transporter.sendMail(mailOptions, (error, info) => {
+    if(error) {
+      console.error(error);
+      res.send({ statut:false, msg: 'Email non envoyer' });
+    } else {
+      res.send({ statut:true, msg: 'Email envoyer', code: confirmationcode2 });
+    }
+  })
+}
   
+
 
 module.exports = {  
    login,
    addGarage,
-   logout
+   logout,
+   mdpcode
 }
