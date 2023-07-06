@@ -20,10 +20,12 @@ app.use(express.urlencoded({ extended: true }))
 const routerclt = require('./routes/clientRouter.js')
 const routeradm = require('./routes/adminRouter.js')
 const routergarage = require('./routes/garageRouter.js')
-
+const routerpassword = require('./routes/passwordRouter.js')
+    
 app.use('/api/clients', routerclt) 
 app.use('/api/admins', routeradm) 
 app.use('/api/garages', routergarage)
+app.use('/api/password', routerpassword)
 
 // testing api
 

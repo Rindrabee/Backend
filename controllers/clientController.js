@@ -197,7 +197,7 @@ transporter.sendMail(mailOptions, (error, info) => {
       console.error(error);
       res.send({ statut:false, msg: 'Email non envoyer' });
     } else {
-      res.send({ statut:true, msg: 'Email envoyer' });
+      res.send({ statut:true, msg: 'Email envoyer', code: confirmationcode2 });
     }
   })
 }
