@@ -14,7 +14,6 @@ const authToken = '2d56874ebe1e557f3c20f3adc623fa80';
 const izaho = require('twilio')(accountSid, authToken);
 
 
-
 // create main Model
 const Client = db.clients;
 

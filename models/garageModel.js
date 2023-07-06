@@ -30,6 +30,13 @@ module.exports = (sequelize, DataTypes) => {
         },
         equipement: {
             type: DataTypes.STRING
+        },
+        Password: {
+            type: DataTypes.STRING
+        },
+        Etat: {
+            type: DataTypes.BOOLEAN,
+            default: false
         }
 
     })
