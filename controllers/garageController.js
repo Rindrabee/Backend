@@ -143,7 +143,7 @@ const addGarage = async (req, res) => {
 const logout = async (req, res) => {
     res.status(200).json({ message: "Déconnexion réussie." });
    
-  };
+};
   
 
 module.exports = {  
