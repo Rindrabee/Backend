@@ -10,7 +10,7 @@ const { any } = require('joi');
 
 // TAm za nitesta message tam phone
 const accountSid = 'AC70c9c21e1b2d040670b7c4ee0a2468cc'; 
-const authToken = 'a1f9a597b289528918b534ef003e2799'; 
+const authToken = 'c4f54737f1292afaca4df34e4df88a6d'; 
 const izaho = require('twilio')(accountSid, authToken);
 
 
@@ -96,6 +96,22 @@ const logout = async (req, res) => {
 };
 
 const addClient = async (req, res) => {
+
+    const crypto = require('crypto');
+
+// Generate a random string of 8 characters
+const randomString = crypto.randomBytes(4).toString('hex');
+
+// Create the random filename
+const filename = `${randomString}.jpg`;
+
+
+    const base64 = req.body.Photo
+    var base64Data = base64.replace(/^data:image\/png;base64,/, "");
+
+require("fs").writeFile(filename, base64Data, 'base64', function(err) {
+  console.log(err);
+});
   try {
     const hashedPassword = await bcrypt.hash(req.body.Password, 10);
     const confirmationcode = rondom();
