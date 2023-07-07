@@ -26,8 +26,8 @@ const transporter = nodemailer.createTransport({
     user: 'garagetahinalisoa@gmail.com',
     clientId: '644760103972-mo2ahkelp1i9i4t8v6655chbsod8tukr.apps.googleusercontent.com',
     clientSecret: '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',
-    refreshToken: '1//04om-J-KNGonICgYIARAAGAQSNwF-L9IrLo-ygUJ5MPipCpvbLZV_2ajb_GBxIC-PqhOoJPEc7CEemjGOW17xKWdnyhZbzWavun0',
-    accessToken: 'ya29.a0AbVbY6OXSpR4RVYXO1UWKLqU4zcbA0ISn8EzomnMTLoO4cV_Afdg3K0KqtbUG6Mn7KFN4DAESB2-63yLcluie9aDdFVibzGuSUvOVV_eB40hA4UFFddO6E-lFBOVUQhkvV9lSc9WmpVO15iHaqK5W-SQ93ptaCgYKAZMSARISFQFWKvPl-pI2mCQIB7D3CO5apOJG_w0163'
+    refreshToken: '1//04OFs1sGz5T9eCgYIARAAGAQSNwF-L9IrG6UHYtDAIuXoOrEGs2gGJKCr7B67hDKQEgyB2R6saniWyvKR-Eb5s4sWJWme8i9E0o0',
+    accessToken: 'ya29.a0AbVbY6PQmF7bsJn2lthi4ooDXLOSSdDEsU380X2xpwJcz69Mw9PqBorSdEJ9m7mlmKO2EomCEpJVXzokLpj_3TCu4MqfUdXAHTgNuf86vM3XiMqicCP0B8CVDsG9EwnTcjpWBi7ch6vVilbiQCN8WG8S21xOaCgYKARASARISFQFWKvPlcaPPhdb4U-k-wXyHN22z9Q0163'
   },
   tls: {
     rejectUnauthorized: false
@@ -97,7 +97,7 @@ const logout = async (req, res) => {
 
 const addClient = async (req, res) => {
 
-    const crypto = require('crypto');
+const crypto = require('crypto');
 
 // Generate a random string of 8 characters
 const randomString = crypto.randomBytes(4).toString('hex');
@@ -105,11 +105,10 @@ const randomString = crypto.randomBytes(4).toString('hex');
 // Create the random filename
 const filename = `${randomString}.jpg`;
 
+const base64 = req.body.Photo
+var base64Data = base64.replace(/^data:image\/png;base64,/, "");
 
-    const base64 = req.body.Photo
-    var base64Data = base64.replace(/^data:image\/png;base64,/, "");
-
-require("fs").writeFile(filename, base64Data, 'base64', function(err) {
+require("fs").writeFile("sary/" + filename, base64Data, 'base64', function(err) {
   console.log(err);
 });
   try {
@@ -126,7 +125,7 @@ require("fs").writeFile(filename, base64Data, 'base64', function(err) {
       Telephone: req.body.Telephone,
       Email: req.body.Email,
       Password: hashedPassword,
-      Photo: req.body.Photo,
+      Photo: filename,
       Codevalidator: confirmationcode,
     };
 
