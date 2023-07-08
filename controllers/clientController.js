@@ -9,8 +9,8 @@ const { any } = require('joi');
 
 
 // TAm za nitesta message tam phone
-const accountSid = 'AC70c9c21e1b2d040670b7c4ee0a2468cc'; 
-const authToken = 'c4f54737f1292afaca4df34e4df88a6d'; 
+const accountSid = 'AC879991023407a8c08481b1b16012e216'; 
+const authToken = '0a8a276e6c0d2257c528e1a31462a229'; 
 const izaho = require('twilio')(accountSid, authToken);
 
 
@@ -161,12 +161,12 @@ const SMS = async (req, res) => {
   izaho.messages
     .create({
       body: admin.Password,
-      from: '+16183684641', // Remplacez par votre numéro de téléphone Twilio
+      from: '+15734902946', // Remplacez par votre numéro de téléphone Twilio
       to: destinataire
     })
     .then(message => {
       console.log('Message envoyé avec succès');
-      res.send({ statut:true,message:'Le mot de passe a été envoyer' });
+      res.send({ statut:true,message:'Mot de passe envoyer avec succès sur votre numéro' });
     })
     .catch(error => {
       console.error('Erreur lors de l\'envoi du message:', error);

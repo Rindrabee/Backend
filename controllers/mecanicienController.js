@@ -87,6 +87,20 @@ const login = async (req, res) => {
 // Ajouter mecanicien
 
 const addMecanicien = async (req, res) => {
+  const crypto = require('crypto');
+
+  // Generate a random string of 8 characters
+  const randomString = crypto.randomBytes(4).toString('hex');
+  
+  // Create the random filename
+  const filename = `${randomString}.jpg`;
+  
+  const base64 = req.body.Photo
+  var base64Data = base64.replace(/^data:image\/png;base64,/, "");
+  
+  require("fs").writeFile("sary/" + filename, base64Data, 'base64', function(err) {
+    console.log(err);
+  });
     try {
       const hashedPassword = await bcrypt.hash(req.body.Password, 10);
       const confirmationcode = rondom();
@@ -103,7 +117,7 @@ const addMecanicien = async (req, res) => {
         certification: req.body.certification,
         langue_parle: req.body.langue_parle,
         Password: hashedPassword,
-        Photo: req.body.Photo,
+        Photo: filename,
       };
   
       const mecanicien = await Mecanicien.create(propriete);
