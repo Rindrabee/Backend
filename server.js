@@ -1,5 +1,6 @@
 const express = require('express')
 const cors = require('cors')
+const path = require('path')
 
 const app = express()
 
@@ -16,6 +17,8 @@ app.use(express.json())
 
 app.use(express.urlencoded({ extended: true }))
 
+app.use(express.static("sary"));
+
 // routers
 const routerclt = require('./routes/clientRouter.js')
 const routeradm = require('./routes/adminRouter.js')
@@ -26,7 +29,7 @@ app.use('/api/clients', routerclt)
 app.use('/api/admins', routeradm) 
 app.use('/api/garages', routergarage)
 app.use('/api/password', routerpassword)
-
+// app.use(express.static('sary'));
 // testing api
 
 app.get('/',(req, res) => {
