@@ -24,6 +24,7 @@
     "nodemailer": "^6.9.3",
     "random-text-generator": "^3.2.1",
     "sequelize": "^6.31.1",
+    "socket.io": "^4.7.1",
     "twilio": "^4.13.0"
   }
 }

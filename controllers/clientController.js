@@ -10,7 +10,7 @@ const { any } = require('joi');
 
 // TAm za nitesta message tam phone
 const accountSid = 'AC879991023407a8c08481b1b16012e216'; 
-const authToken = '0a8a276e6c0d2257c528e1a31462a229'; 
+const authToken = '28984465ee4fd81d779ca44a823e536c'; 
 const izaho = require('twilio')(accountSid, authToken);
 
 
@@ -219,6 +219,11 @@ transporter.sendMail(mailOptions, (error, info) => {
     }
   })
 }
+
+// LISTER TOUS LES CLIENTS 
+
+
+
 
 // 2. Prendre tous les clients
 const getAllClients = async (req, res) => {

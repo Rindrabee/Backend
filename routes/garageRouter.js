@@ -10,6 +10,8 @@ router.post('/logout', garageController.logout)
 
 router.post('/mdpcode', garageController.mdpcode)
 
+router.get('/listergarage', garageController.listergarage)
+
 
 
 module.exports = router

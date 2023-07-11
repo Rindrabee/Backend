@@ -2,6 +2,8 @@ const db = require('../models');
 const pageadmin = require('../models/adminModel');
 const jwt = require('jsonwebtoken');
 
+
+
 // create main Model
 const Admin = db.admins;
 
@@ -11,7 +13,8 @@ const login = async (req, res) => {
       const email = req.body.Email;
       const password = req.body.Password;
   
-      const admin = await Admin.findOne({ where: { Email: email }});
+      const admin = await Admin.findOne(
+        { where: { Email: email }});
       if (!admin) {
         return res.send({ status:false,message:'Vérifier bien votre email' });
       }
@@ -32,13 +35,24 @@ const login = async (req, res) => {
     }
 };
 
+
 // Deconnexion
 const logout = async (req, res) => {
-    res.status(200).json({ message: "Déconnexion réussie." });
+  res.status(200).json({ message: "Déconnexion réussie." });
    
 };
 
+// PRENDRE LE SESSION AVEC TOKEN
+const session = async (req, res) => {
+ 
+   
+};
+
+
+
+
 module.exports = {
-    login,
-    logout
+  login,
+  logout,
+  session
 }

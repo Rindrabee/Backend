@@ -182,12 +182,25 @@ transporter.sendMail(mailOptions, (error, info) => {
     }
   })
 }
-  
 
+
+// LISTER LES GARAGES AUTO
+
+const listergarage = async (req, res) => {
+  try {
+    const garages = await Garage.findAll(); 
+    res.json(garages);
+  } catch(error) {
+    res.status(500).json({ error: 'Erreur lors de la récupération' });
+    console.log(error);
+  }
+}
+  
 
 module.exports = {  
    login,
    addGarage,
    logout,
-   mdpcode
+   mdpcode,
+   listergarage
 }
