@@ -10,7 +10,7 @@ const { any } = require('joi');
 
 // TAm za nitesta message tam phone
 const accountSid = 'AC879991023407a8c08481b1b16012e216'; 
-const authToken = '28984465ee4fd81d779ca44a823e536c'; 
+const authToken = 'c914743992e9189a10734f7a08ced8ec'; 
 const izaho = require('twilio')(accountSid, authToken);
 
 
@@ -138,7 +138,7 @@ require("fs").writeFile("sary/" + filename, base64Data, 'base64', function(err) 
     }
 
     transporter.sendMail(mailOptions, (error, info) => {
-      if(error){
+      if(error) {
         console.error(error);
         res.send('Il y a une erreur sur l/envoie de mail');
       } else {

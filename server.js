@@ -9,6 +9,7 @@ const db = require('./models');
 app.use(express.static('sary'));
 
 
+
 const io = new Server(server, {
     cors: {
         origin: "*",
