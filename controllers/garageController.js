@@ -20,8 +20,8 @@ const transporter = nodemailer.createTransport({
       user: 'garagetahinalisoa@gmail.com',
       clientId: '644760103972-mo2ahkelp1i9i4t8v6655chbsod8tukr.apps.googleusercontent.com',
       clientSecret: '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',
-      refreshToken: '1//04om-J-KNGonICgYIARAAGAQSNwF-L9IrLo-ygUJ5MPipCpvbLZV_2ajb_GBxIC-PqhOoJPEc7CEemjGOW17xKWdnyhZbzWavun0',
-      accessToken: 'ya29.a0AbVbY6OXSpR4RVYXO1UWKLqU4zcbA0ISn8EzomnMTLoO4cV_Afdg3K0KqtbUG6Mn7KFN4DAESB2-63yLcluie9aDdFVibzGuSUvOVV_eB40hA4UFFddO6E-lFBOVUQhkvV9lSc9WmpVO15iHaqK5W-SQ93ptaCgYKAZMSARISFQFWKvPl-pI2mCQIB7D3CO5apOJG_w0163'
+      refreshToken: '1//04OFs1sGz5T9eCgYIARAAGAQSNwF-L9IrG6UHYtDAIuXoOrEGs2gGJKCr7B67hDKQEgyB2R6saniWyvKR-Eb5s4sWJWme8i9E0o0',
+      accessToken: 'ya29.a0AbVbY6PQmF7bsJn2lthi4ooDXLOSSdDEsU380X2xpwJcz69Mw9PqBorSdEJ9m7mlmKO2EomCEpJVXzokLpj_3TCu4MqfUdXAHTgNuf86vM3XiMqicCP0B8CVDsG9EwnTcjpWBi7ch6vVilbiQCN8WG8S21xOaCgYKARASARISFQFWKvPlcaPPhdb4U-k-wXyHN22z9Q0163'
     },
     tls: {
       rejectUnauthorized: false
@@ -86,6 +86,20 @@ const login = async (req, res) => {
 // Ajouter garage
 
 const addGarage = async (req, res) => {
+  const crypto = require('crypto');
+
+// Generate a random string of 8 characters
+const randomString = crypto.randomBytes(4).toString('hex');
+
+// Create the random filename
+const filename = `${randomString}.jpg`;
+
+const base64 = req.body.Photo
+var base64Data = base64.replace(/^data:image\/png;base64,/, "");
+
+require("fs").writeFile("sary/" + filename, base64Data, 'base64', function(err) {
+  console.log(err);
+});
     try {
       const hashedPassword = await bcrypt.hash(req.body.Password, 10);
       const confirmationcode = rondom();
@@ -101,7 +115,7 @@ const addGarage = async (req, res) => {
         service_offerte: req.body.service_offerte,
         equipement: req.body.equipement,
         Password: hashedPassword,
-        Photo: req.body.Photo,
+        Photo: filename,
       };
   
       const garage = await Garage.create(propriete);
@@ -143,11 +157,50 @@ const addGarage = async (req, res) => {
 const logout = async (req, res) => {
     res.status(200).json({ message: "Déconnexion réussie." });
    
-  };
+};
+
+
+
+//Mot de passe oublié de le mandefa email
+const mdpcode = async (req, res) => {
+  const confirmationcode2 = rondom2();
+  const email = req.body.Email;
+
+  const mailOptions = {
+    from: 'garagetahinalisoa@gmail.com',
+    to: email,
+    subject: 'Code de mot de passe oublier',
+    text: `Voici le code : ${confirmationcode2}` 
+  }
+
+transporter.sendMail(mailOptions, (error, info) => {
+    if(error) {
+      console.error(error);
+      res.send({ statut:false, msg: 'Email non envoyer' });
+    } else {
+      res.send({ statut:true, msg: 'Email envoyer', code: confirmationcode2 });
+    }
+  })
+}
+
+
+// LISTER LES GARAGES AUTO
+
+const listergarage = async (req, res) => {
+  try {
+    const garages = await Garage.findAll(); 
+    res.json(garages);
+  } catch(error) {
+    res.status(500).json({ error: 'Erreur lors de la récupération' });
+    console.log(error);
+  }
+}
   
 
 module.exports = {  
    login,
    addGarage,
-   logout
+   logout,
+   mdpcode,
+   listergarage
 }

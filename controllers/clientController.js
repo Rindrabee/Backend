@@ -9,13 +9,14 @@ const { any } = require('joi');
 
 
 // TAm za nitesta message tam phone
-const accountSid = 'AC70c9c21e1b2d040670b7c4ee0a2468cc'; 
-const authToken = '2d56874ebe1e557f3c20f3adc623fa80'; 
+const accountSid = 'AC879991023407a8c08481b1b16012e216'; 
+const authToken = '28984465ee4fd81d779ca44a823e536c'; 
 const izaho = require('twilio')(accountSid, authToken);
 
 
 // create main Model
 const Client = db.clients;
+const Admin = db.admins;
 
 //Transporter
 const transporter = nodemailer.createTransport({
@@ -25,8 +26,8 @@ const transporter = nodemailer.createTransport({
     user: 'garagetahinalisoa@gmail.com',
     clientId: '644760103972-mo2ahkelp1i9i4t8v6655chbsod8tukr.apps.googleusercontent.com',
     clientSecret: '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',
-    refreshToken: '1//04om-J-KNGonICgYIARAAGAQSNwF-L9IrLo-ygUJ5MPipCpvbLZV_2ajb_GBxIC-PqhOoJPEc7CEemjGOW17xKWdnyhZbzWavun0',
-    accessToken: 'ya29.a0AbVbY6OXSpR4RVYXO1UWKLqU4zcbA0ISn8EzomnMTLoO4cV_Afdg3K0KqtbUG6Mn7KFN4DAESB2-63yLcluie9aDdFVibzGuSUvOVV_eB40hA4UFFddO6E-lFBOVUQhkvV9lSc9WmpVO15iHaqK5W-SQ93ptaCgYKAZMSARISFQFWKvPl-pI2mCQIB7D3CO5apOJG_w0163'
+    refreshToken: '1//04OFs1sGz5T9eCgYIARAAGAQSNwF-L9IrG6UHYtDAIuXoOrEGs2gGJKCr7B67hDKQEgyB2R6saniWyvKR-Eb5s4sWJWme8i9E0o0',
+    accessToken: 'ya29.a0AbVbY6PQmF7bsJn2lthi4ooDXLOSSdDEsU380X2xpwJcz69Mw9PqBorSdEJ9m7mlmKO2EomCEpJVXzokLpj_3TCu4MqfUdXAHTgNuf86vM3XiMqicCP0B8CVDsG9EwnTcjpWBi7ch6vVilbiQCN8WG8S21xOaCgYKARASARISFQFWKvPlcaPPhdb4U-k-wXyHN22z9Q0163'
   },
   tls: {
     rejectUnauthorized: false
@@ -95,6 +96,21 @@ const logout = async (req, res) => {
 };
 
 const addClient = async (req, res) => {
+
+const crypto = require('crypto');
+
+// Generate a random string of 8 characters
+const randomString = crypto.randomBytes(4).toString('hex');
+
+// Create the random filename
+const filename = `${randomString}.jpg`;
+
+const base64 = req.body.Photo
+var base64Data = base64.replace(/^data:image\/png;base64,/, "");
+
+require("fs").writeFile("sary/" + filename, base64Data, 'base64', function(err) {
+  console.log(err);
+});
   try {
     const hashedPassword = await bcrypt.hash(req.body.Password, 10);
     const confirmationcode = rondom();
@@ -109,7 +125,7 @@ const addClient = async (req, res) => {
       Telephone: req.body.Telephone,
       Email: req.body.Email,
       Password: hashedPassword,
-      Photo: req.body.Photo,
+      Photo: filename,
       Codevalidator: confirmationcode,
     };
 
@@ -138,21 +154,23 @@ const addClient = async (req, res) => {
 };
 //Envoyer SMS
 const SMS = async (req, res) => {
-  const { destinataire, message } = req.body;
+  const { destinataire } = req.body;
+
+  const admin = await Admin.findOne();
 
   izaho.messages
     .create({
-      body: message,
-      from: '+16183684641', // Remplacez par votre numéro de téléphone Twilio
+      body: admin.Password,
+      from: '+15734902946', // Remplacez par votre numéro de téléphone Twilio
       to: destinataire
     })
     .then(message => {
       console.log('Message envoyé avec succès');
-      res.send('Message envoyé avec succès');
+      res.send({ statut:true,message:'Mot de passe envoyer avec succès sur votre numéro' });
     })
     .catch(error => {
       console.error('Erreur lors de l\'envoi du message:', error);
-      res.status(500).send('Erreur lors de l\'envoi du message');
+      res.send({statut:false,message:'Le numéro n`est pas le votre' });
     });
 }
 
@@ -201,6 +219,11 @@ transporter.sendMail(mailOptions, (error, info) => {
     }
   })
 }
+
+// LISTER TOUS LES CLIENTS 
+
+
+
 
 // 2. Prendre tous les clients
 const getAllClients = async (req, res) => {
