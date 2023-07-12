@@ -1,7 +1,7 @@
 const db = require('../models');
 const pageadmin = require('../models/adminModel');
 const jwt = require('jsonwebtoken');
-
+const secretKey = 'ma_clé_secrète';
 
 
 // create main Model
@@ -13,8 +13,8 @@ const login = async (req, res) => {
       const email = req.body.Email;
       const password = req.body.Password;
   
-      const admin = await Admin.findOne(
-        { where: { Email: email }});
+      const admin = await Admin.findOne({ where: { Email: email }});
+
       if (!admin) {
         return res.send({ status:false,message:'Vérifier bien votre email' });
       }
@@ -24,7 +24,7 @@ const login = async (req, res) => {
         return res.send({ status:false,message:'Vérifier bien votre mot de passe' });
       }
      
-      const token = jwt.sign({ adminId: admin.id }, 'secret_key', { expiresIn: '1h' });
+      const token = jwt.sign({ adminId: admin.id }, secretKey, { expiresIn: '1h' });
   
       res.json({ status:true,token:token });
       
@@ -44,9 +44,24 @@ const logout = async (req, res) => {
 
 // PRENDRE LE SESSION AVEC TOKEN
 const session = async (req, res) => {
- 
-   
+  try {
+    const token = req.headers['authorization'].split(' ')[1];
+
+    const decodedtoken = jwt.verify(token, secretKey);
+
+    const adm = await Admin.findByPk(decodedtoken.adminId);
+
+    if(!adm) {
+      return res.status(401).json({message: 'Aucun trouvé'});
+    }
+    return res.json({adm: adm});
+
+
+  } catch(error) {
+    return res.json({message: 'Token pas trouvé'});
+  }
 };
+
 
 
 

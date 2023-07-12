@@ -18,7 +18,7 @@ router.post('/verificationclt', clientController.verification)
 
 
 
-router.get('/:id' ,clientController.getOneClient)
+router.get('/getOneClient/:id' ,clientController.getOneClient)
 
 router.put('/:id', clientController.updateClient)
 

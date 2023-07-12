@@ -87,20 +87,41 @@ const login = async (req, res) => {
 // Ajouter mecanicien
 
 const addMecanicien = async (req, res) => {
-  const crypto = require('crypto');
-
-  // Generate a random string of 8 characters
-  const randomString = crypto.randomBytes(4).toString('hex');
+  const uuid = require('uuid');
+  const fs = require('fs');
+  const mime = require('mime-types');
   
-  // Create the random filename
-  const filename = `${randomString}.jpg`;
+  // Generate a random filename using UUID
+  const filename = `${uuid.v4()}`;
   
-  const base64 = req.body.Photo
-  var base64Data = base64.replace(/^data:image\/png;base64,/, "");
+  const base64 = req.body.Photo;
+  const base64Data = base64.replace(/^data:image\/\w+;base64,/, "");
+  const buffer = Buffer.from(base64Data, 'base64');
   
-  require("fs").writeFile("sary/" + filename, base64Data, 'base64', function(err) {
-    console.log(err);
-  });
+  const filePath = `public/${filename}`;
+  
+  (async () => {
+    try {
+      const mimeType = base64.split(';')[0].split(':')[1];
+      const fileExtension = mime.extension(mimeType);
+  
+      if (fileExtension) {
+        const newFilePath = `${filePath}.${fileExtension}`;
+        fs.writeFile(newFilePath, buffer, (err) => {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log("L'image a été enregistrée avec succès !");
+          }
+        });
+      } else {
+        console.log("Impossible de détecter le type de fichier de l'image.");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  })();
+  
     try {
       const hashedPassword = await bcrypt.hash(req.body.Password, 10);
       const confirmationcode = rondom();
