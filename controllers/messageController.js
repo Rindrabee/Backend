@@ -5,7 +5,6 @@ const db = require('../models');
 const Message = db.messages;
 
 const listermessage = async (req, res) => {
-    
     try {
         const messages = await Message.findAll(); 
         res.json(messages);

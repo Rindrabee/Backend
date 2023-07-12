@@ -8,9 +8,10 @@ const randomText = require('random-text-generator');
 const { any } = require('joi');
 
 
+
 // TAm za nitesta message tam phone
 const accountSid = 'AC879991023407a8c08481b1b16012e216'; 
-const authToken = 'c914743992e9189a10734f7a08ced8ec'; 
+const authToken = '06b28c387e0f01dbc59445645dc9c43b'; 
 const izaho = require('twilio')(accountSid, authToken);
 
 
@@ -78,7 +79,7 @@ const login = async (req, res) => {
       return res.send({ status:false,message:'Code de validation non envoyer veuillez réinscire'});
     }
    
-    const token = jwt.sign({ clientId: client.id }, 'secret_key', { expiresIn: '1h' });
+    const token = jwt.sign({ clientId: client.id }, secretKey, { expiresIn: '1h' });
 
     res.json({ status:true,token:token });
     
@@ -88,6 +89,26 @@ const login = async (req, res) => {
     res.send("Une erreur s'est produite lors de la connexion.");
   }
 };
+
+// PRENDRE LE SESSION AVEC TOKEN
+const session = async (req, res) => {
+  try {
+    const token = req.headers['authorization'].split(' ')[1];
+
+    const decodedtoken = jwt.verify(token, secretKey);
+
+    const clt = await Client.findByPk(decodedtoken.clientId);
+
+    if(!clt) {
+      return res.status(401).json({message: 'Aucun trouvé'});
+    }
+    return res.json({clt: clt});
+
+  } catch(error) {
+    return res.json({message: 'Token pas trouvé'});
+  }
+};
+
 
 // Deconnexion
 const logout = async (req, res) => {
@@ -243,9 +264,6 @@ transporter.sendMail(mailOptions, (error, info) => {
   })
 }
 
-// LISTER TOUS LES CLIENTS 
-
-
 
 
 // 2. Prendre tous les clients
@@ -289,4 +307,5 @@ module.exports = {
   logout,
   SMS,
   mdpcode,
+  session
 }

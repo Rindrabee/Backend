@@ -16,6 +16,8 @@ router.post('/mdpcode', clientController.mdpcode)
 
 router.post('/verificationclt', clientController.verification)
 
+router.get('/session',  clientController.session)
+
 
 
 router.get('/getOneClient/:id' ,clientController.getOneClient)

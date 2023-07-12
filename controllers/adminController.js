@@ -62,12 +62,16 @@ const session = async (req, res) => {
   }
 };
 
-
-
+// 2. Prendre tous les administrateurs
+const getAllAdmin = async (req, res) => {
+  let admins = await Admin.findAll({})
+  res.status(200).send(admins)
+}
 
 
 module.exports = {
   login,
   logout,
-  session
+  session,
+  getAllAdmin
 }
