@@ -10,5 +10,7 @@ router.post('/logout', mecanicienController.logout)
 
 router.post('/mdpcode', mecanicienController.mdpcode)
 
+router.get('/listermecanicien', mecanicienController.listermecanicien)
+
 
 module.exports = router

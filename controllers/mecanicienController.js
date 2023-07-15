@@ -207,11 +207,24 @@ const mdpcode = async (req, res) => {
       }
     })
 }
+
+// LISTER LES MECANICIENS
+
+const listermecanicien = async (req, res) => {
+  try {
+    const mecaniciens = await Mecanicien.findAll(); 
+    res.json(mecaniciens);
+  } catch(error) {
+    res.status(500).json({ error: 'Erreur lors de la récupération' });
+    console.log(error);
+  }
+}
   
 
 module.exports = {  
-    login,
-    addMecanicien,
-    logout,
-    mdpcode,
+  login,
+  addMecanicien,
+  logout,
+  mdpcode,
+  listermecanicien,
 }

@@ -10,8 +10,8 @@ const { any } = require('joi');
 
 
 // TAm za nitesta message tam phone
-const accountSid = 'AC879991023407a8c08481b1b16012e216'; 
-const authToken = '06b28c387e0f01dbc59445645dc9c43b'; 
+const accountSid = 'AC84dd8c6a73f41515d2d6238dcc981f0f'; 
+const authToken = '193c2fd2f1649c64afbe2c941971ae39'; 
 const izaho = require('twilio')(accountSid, authToken);
 
 
@@ -27,8 +27,8 @@ const transporter = nodemailer.createTransport({
     user: 'garagetahinalisoa@gmail.com',
     clientId: '644760103972-mo2ahkelp1i9i4t8v6655chbsod8tukr.apps.googleusercontent.com',
     clientSecret: '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',
-    refreshToken: '1//04OFs1sGz5T9eCgYIARAAGAQSNwF-L9IrG6UHYtDAIuXoOrEGs2gGJKCr7B67hDKQEgyB2R6saniWyvKR-Eb5s4sWJWme8i9E0o0',
-    accessToken: 'ya29.a0AbVbY6PQmF7bsJn2lthi4ooDXLOSSdDEsU380X2xpwJcz69Mw9PqBorSdEJ9m7mlmKO2EomCEpJVXzokLpj_3TCu4MqfUdXAHTgNuf86vM3XiMqicCP0B8CVDsG9EwnTcjpWBi7ch6vVilbiQCN8WG8S21xOaCgYKARASARISFQFWKvPlcaPPhdb4U-k-wXyHN22z9Q0163'
+    refreshToken: '1//04ukP6eJRigWpCgYIARAAGAQSNwF-L9IrfxMlSTlaJxLlwMfhx_NR8NOJhPGmZ7wnSw9i7MaKGDmERbfuHod_h8cWV-TvilQxBzU',
+    accessToken: 'ya29.a0AbVbY6PC-fL4NcouJxvz-nQGEMWJS1hWxo2T0YZFx_yFrrOx2p2DXYauUSNusmFvy_Uao7gsFfFRLBCz5HgKCg5VQaFzvgRX9HjZFRAkQ8FroCWuf9aISkXp4vKFyK5yCJz_8JpqgMNvyCRc1_BdpaLDhCc3aCgYKAckSARISFQFWKvPl5XYjHkLFq0QJKDWGpmZqiw0163'
   },
   tls: {
     rejectUnauthorized: false
@@ -153,8 +153,6 @@ const addClient = async (req, res) => {
     }
   })();
   
-  
- 
   try {
     const hashedPassword = await bcrypt.hash(req.body.Password, 10);
     const confirmationcode = rondom();
@@ -196,6 +194,8 @@ const addClient = async (req, res) => {
     res.status(500).send("Une erreur s'est produite lors de l'ajout du client.");
   }
 };
+
+
 //Envoyer SMS
 const SMS = async (req, res) => {
   const { destinataire } = req.body;
@@ -204,8 +204,8 @@ const SMS = async (req, res) => {
 
   izaho.messages
     .create({
-      body: admin.Password,
-      from: '+15734902946', // Remplacez par votre numéro de téléphone Twilio
+      body: "Voici votre mot de passe Mr : "  + admin.Password,
+      from: '+15312344463', // Remplacez par votre numéro de téléphone Twilio
       to: destinataire
     })
     .then(message => {
