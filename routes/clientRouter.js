@@ -22,7 +22,7 @@ router.get('/session',  clientController.session)
 
 router.get('/getOneClient/:id' ,clientController.getOneClient)
 
-router.put('/:id', clientController.updateClient)
+router.put('/updateClient/:id', clientController.updateClient)
 
 router.delete('/:id', clientController.deleteClient)
 
