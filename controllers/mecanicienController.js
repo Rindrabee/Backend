@@ -19,8 +19,8 @@ const transporter = nodemailer.createTransport({
       user: 'garagetahinalisoa@gmail.com',
       clientId: '644760103972-mo2ahkelp1i9i4t8v6655chbsod8tukr.apps.googleusercontent.com',
       clientSecret: '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',
-      refreshToken: '1//04OFs1sGz5T9eCgYIARAAGAQSNwF-L9IrG6UHYtDAIuXoOrEGs2gGJKCr7B67hDKQEgyB2R6saniWyvKR-Eb5s4sWJWme8i9E0o0',
-      accessToken: 'ya29.a0AbVbY6PQmF7bsJn2lthi4ooDXLOSSdDEsU380X2xpwJcz69Mw9PqBorSdEJ9m7mlmKO2EomCEpJVXzokLpj_3TCu4MqfUdXAHTgNuf86vM3XiMqicCP0B8CVDsG9EwnTcjpWBi7ch6vVilbiQCN8WG8S21xOaCgYKARASARISFQFWKvPlcaPPhdb4U-k-wXyHN22z9Q0163'
+      refreshToken: '1//04ukP6eJRigWpCgYIARAAGAQSNwF-L9IrfxMlSTlaJxLlwMfhx_NR8NOJhPGmZ7wnSw9i7MaKGDmERbfuHod_h8cWV-TvilQxBzU',
+      accessToken: 'ya29.a0AbVbY6PC-fL4NcouJxvz-nQGEMWJS1hWxo2T0YZFx_yFrrOx2p2DXYauUSNusmFvy_Uao7gsFfFRLBCz5HgKCg5VQaFzvgRX9HjZFRAkQ8FroCWuf9aISkXp4vKFyK5yCJz_8JpqgMNvyCRc1_BdpaLDhCc3aCgYKAckSARISFQFWKvPl5XYjHkLFq0QJKDWGpmZqiw0163'
     },
     tls: {
       rejectUnauthorized: false
@@ -71,7 +71,7 @@ const login = async (req, res) => {
     //     return res.send({ status:false,message:'Vous êtes pas encore approuvé'});
     //   }
      
-      const token = jwt.sign({ mecanicienId: mecanicien.id }, 'secret_key', { expiresIn: '1h' });
+      const token = jwt.sign({ mecanicienId: mecanicien.id }, secretKey, { expiresIn: '1h' });
   
       res.json({ status:true,token:token });
       
@@ -130,6 +130,7 @@ const addMecanicien = async (req, res) => {
         Nom: req.body.Nom,
         Prenoms: req.body.Prenoms,
         Naissance: req.body.Naissance,
+        Adresse: req.body.Adresse,
         Sexe: req.body.Sexe,
         Telephone: req.body.Telephone,
         Specialite: req.body.Specialite,
@@ -219,6 +220,25 @@ const listermecanicien = async (req, res) => {
     console.log(error);
   }
 }
+
+// Prendre le session du mécanicien
+const session = async (req, res) => {
+  try {
+    const token = req.headers['authorization'].split(' ')[1];
+
+    const decodedtoken = jwt.verify(token, secretKey);
+
+    const mc = await Mecanicien.findByPk(decodedtoken.mecanicienId);
+
+    if(!mc) {
+      return res.status(401).json({message: 'Aucun trouvé'});
+    }
+    return res.json({mc: mc});
+
+  } catch(error) {
+    return res.json({message: 'Token pas trouvé'});
+  }
+}
   
 
 module.exports = {  
@@ -227,4 +247,5 @@ module.exports = {
   logout,
   mdpcode,
   listermecanicien,
+  session
 }

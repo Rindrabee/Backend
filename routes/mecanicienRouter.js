@@ -12,5 +12,7 @@ router.post('/mdpcode', mecanicienController.mdpcode)
 
 router.get('/listermecanicien', mecanicienController.listermecanicien)
 
+router.get('/session', mecanicienController.session)
+
 
 module.exports = router
