@@ -18,6 +18,7 @@ const izaho = require('twilio')(accountSid, authToken);
 // create main Model
 const Client = db.clients;
 const Admin = db.admins;
+const Urgence = db.urgences;
 
 //Transporter
 const transporter = nodemailer.createTransport({
@@ -116,6 +117,9 @@ const logout = async (req, res) => {
  
 };
 
+
+//Ajouter un nouveau client
+
 const addClient = async (req, res) => {
 
   const uuid = require('uuid');
@@ -189,6 +193,88 @@ const addClient = async (req, res) => {
     })
     res.status(200).send(client);
     console.log(client);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Une erreur s'est produite lors de l'ajout du client.");
+  }
+};
+
+
+
+
+
+//Ajouter un nouveau client
+
+const ajouterurgence = async (req, res) => {
+
+  // const uuid = require('uuid');
+  // const fs = require('fs');
+  // const mime = require('mime-types');
+  
+  // // Generate a random filename using UUID
+  // const filename = `${uuid.v4()}`;
+  
+  // const base64 = req.body.Photo;
+  // const base64Data = base64.replace(/^data:image\/\w+;base64,/, "");
+  // const buffer = Buffer.from(base64Data, 'base64');
+  
+  // const filePath = `public/${filename}`;
+  
+  // (async () => {
+  //   try {
+  //     const mimeType = base64.split(';')[0].split(':')[1];
+  //     const fileExtension = mime.extension(mimeType);
+  
+  //     if (fileExtension) {
+  //       const newFilePath = `${filePath}.${fileExtension}`;
+  //       fs.writeFile(newFilePath, buffer, (err) => {
+  //         if (err) {
+  //           console.log(err);
+  //         } else {
+  //           console.log("L'image a été enregistrée avec succès !");
+  //         }
+  //       });
+  //     } else {
+  //       console.log("Impossible de détecter le type de fichier de l'image.");
+  //     }
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // })();
+  
+  try {
+    // const hashedPassword = await bcrypt.hash(req.body.Password, 10);
+    // const confirmationcode = rondom();
+
+    const propriete = {
+      Nom: req.body.name,
+      Email: req.body.email,
+      Telephone: req.body.phone,
+      Adresse: req.body.address,
+      Probleme: req.body.Probleme,
+      longitude: req.body.longitude,
+      latitude: req.body.latitude,
+    };
+
+    const urgence = await Urgence.create(propriete);
+    const mailOptions = {
+      from: 'garagetahinalisoa@gmail.com',
+      to: req.body.email,
+      subject: 'URGENCE',
+      text: `Bonjour on a bien reçu votre demande d'urgence et nous cherchons maintenat à trouver une garage près de votre 
+      localisation et, ensuite eux vous contacte sur le site en envoyant une mécanicien` 
+    }
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if(error) {
+        console.error(error);
+        res.send('Il y a une erreur sur l/envoie de mail');
+      } else {
+        res.send({ statut:true, msg: 'Email envoyer' });
+      }
+    })
+    res.status(200).send(urgence);
+    console.log(urgence);
   } catch (error) {
     console.error(error);
     res.status(500).send("Une erreur s'est produite lors de l'ajout du client.");
@@ -307,5 +393,6 @@ module.exports = {
   logout,
   SMS,
   mdpcode,
-  session
+  session,
+  ajouterurgence
 }

@@ -4,6 +4,8 @@ const router = require('express').Router()
 
 router.post('/addClient', clientController.addClient)
 
+router.post('/ajouterurgence', clientController.ajouterurgence)
+
 router.get('/allClients', clientController.getAllClients)
 
 router.post('/login', clientController.login)
