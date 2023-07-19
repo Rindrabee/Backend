@@ -10,6 +10,8 @@ router.get('/getAllAdmin', adminController.getAllAdmin)
 
 router.get('/session', adminController.session)
 
+router.get('/getAllurgence', adminController.getAllurgence)
+
 
 
 router.put('/updateAdmin/:id', adminController.updateAdmin)

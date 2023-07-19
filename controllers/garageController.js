@@ -163,7 +163,7 @@ const addGarage = async (req, res) => {
       }
   
       transporter.sendMail(mailOptions, (error, info) => {
-        if(error){
+        if(error) {
           console.error(error);
           res.send('Il y a une erreur sur l/envoie de mail');
         } else {
@@ -316,6 +316,71 @@ const session = async (req, res) => {
   }
 }
 
+//Modification garage
+
+const updateGarage = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const garage = await Garage.findByPk(id);
+
+    if (!garage) {
+      return res.status(404).send("Mecanicien not found");
+    }
+
+    garage.Nom = req.body.Nom;
+    garage.Adresse = req.body.Adresse;
+    garage.Latitude = req.body.Latitude;
+    garage.Longitude = req.body.Longitude;
+    garage.Telephone = req.body.Telephone;
+    garage.Email = req.body.Email;
+    garage.Specialite = req.body.Specialite;
+    garage.Heures_ouverture = req.body.Heures_ouverture;
+    garage.Heures_fermeture = req.body.Heures_fermeture;
+    garage.equipement = req.body.equipement;
+    garage.service_offerte = req.body.service_offerte;
+   
+
+
+    if (req.body.Photo) {
+      // Faites l'enregistrement de l'image ici
+      const uuid = require('uuid');
+      const fs = require('fs');
+      const mime = require('mime-types');
+      const filename = `${uuid.v4()}`;
+      const base64 = req.body.Photo;
+      const base64Data = base64.replace(/^data:image\/\w+;base64,/, "");
+      const buffer = Buffer.from(base64Data, 'base64');
+      const filePath = `public/${filename}`;
+
+      const mimeType = base64.split(';')[0].split(':')[1];
+      const fileExtension = mime.extension(mimeType);
+
+      if (fileExtension) {
+        const newFilePath = `${filePath}.${fileExtension}`;
+        fs.writeFile(newFilePath, buffer, (err) => {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log("L'image a été enregistrée avec succès !");
+            garage.Photo = filename;
+            garage.save(); // Sauvegarder le client avec la nouvelle image dans la base de données
+          }
+        });
+      } else {
+        console.log("Impossible de détecter le type de fichier de l'image.");
+      }
+    }
+
+  await garage.save();
+
+  res.status(200).send(garage);
+  } catch (error) {
+  console.error(error);
+  res.status(500).send("Internal Server Error");
+  }
+};
+
+
 
 
 module.exports = {  
@@ -326,5 +391,6 @@ module.exports = {
    listergarage,
    ajoutvoiture,
    listervoiture,
-   session
+   session,
+   updateGarage
 }

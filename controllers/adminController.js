@@ -6,6 +6,7 @@ const secretKey = 'ma_clé_secrète';
 
 // create main Model
 const Admin = db.admins;
+const Urgence = db.urgences;
 
 
 const login = async (req, res) => {
@@ -95,10 +96,18 @@ const getAllAdmin = async (req, res) => {
 }
 
 
+// Lister tous les urgences
+const getAllurgence = async (req, res) => {
+  let urgences = await Urgence.findAll({})
+  res.status(200).send(urgences)
+}
+
+
 module.exports = {
   login,
   logout,
   session,
   getAllAdmin,
-  updateAdmin
+  updateAdmin,
+  getAllurgence
 }

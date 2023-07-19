@@ -19,5 +19,7 @@ router.get('/listervoiture', garageController.listervoiture)
 
 router.get('/session', garageController.session)
 
+router.put('/updateGarage/:id', garageController.updateGarage)
+
 
 module.exports = router
