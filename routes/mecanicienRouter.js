@@ -15,4 +15,7 @@ router.get('/listermecanicien', mecanicienController.listermecanicien)
 router.get('/session', mecanicienController.session)
 
 
+router.put('/updateMecanicien/:id', mecanicienController.updateMecanicien)
+
+
 module.exports = router

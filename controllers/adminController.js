@@ -62,6 +62,32 @@ const session = async (req, res) => {
   }
 };
 
+// Mise à jour Admin
+const updateAdmin = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const admin = await Admin.findByPk(id);
+
+    if (!admin) {
+      return res.status(404).send("Client not found");
+    }
+
+    admin.Nom = req.body.Nom;
+    admin.Prenoms = req.body.Prenoms;
+    admin.Naissance = req.body.Naissance;
+    admin.Email = req.body.Email;
+    admin.Password = req.body.Password;
+
+
+    await admin.save();
+
+    res.status(200).send(admin);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
 // 2. Prendre tous les administrateurs
 const getAllAdmin = async (req, res) => {
   let admins = await Admin.findAll({})
@@ -73,5 +99,6 @@ module.exports = {
   login,
   logout,
   session,
-  getAllAdmin
+  getAllAdmin,
+  updateAdmin
 }

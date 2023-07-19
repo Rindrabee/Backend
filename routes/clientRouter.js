@@ -26,6 +26,8 @@ router.get('/getOneClient/:id' ,clientController.getOneClient)
 
 router.put('/updateClient/:id', clientController.updateClient)
 
+router.post('/updateClientPhoto', clientController.updateClientPhoto)
+
 router.delete('/:id', clientController.deleteClient)
 
 module.exports = router

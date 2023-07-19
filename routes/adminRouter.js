@@ -12,4 +12,8 @@ router.get('/session', adminController.session)
 
 
 
+router.put('/updateAdmin/:id', adminController.updateAdmin)
+
+
+
 module.exports = router

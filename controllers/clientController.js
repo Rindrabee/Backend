@@ -11,7 +11,7 @@ const { any } = require('joi');
 
 // TAm za nitesta message tam phone
 const accountSid = 'AC84dd8c6a73f41515d2d6238dcc981f0f'; 
-const authToken = '30866f69a6cfe2d10cf3aca1315c8a89'; 
+const authToken = '41e5e95ae790f4768604e446ed9f4f21'; 
 const izaho = require('twilio')(accountSid, authToken);
 
 
@@ -200,52 +200,11 @@ const addClient = async (req, res) => {
 };
 
 
-
-
-
 //Ajouter un nouveau client
 
 const ajouterurgence = async (req, res) => {
 
-  // const uuid = require('uuid');
-  // const fs = require('fs');
-  // const mime = require('mime-types');
-  
-  // // Generate a random filename using UUID
-  // const filename = `${uuid.v4()}`;
-  
-  // const base64 = req.body.Photo;
-  // const base64Data = base64.replace(/^data:image\/\w+;base64,/, "");
-  // const buffer = Buffer.from(base64Data, 'base64');
-  
-  // const filePath = `public/${filename}`;
-  
-  // (async () => {
-  //   try {
-  //     const mimeType = base64.split(';')[0].split(':')[1];
-  //     const fileExtension = mime.extension(mimeType);
-  
-  //     if (fileExtension) {
-  //       const newFilePath = `${filePath}.${fileExtension}`;
-  //       fs.writeFile(newFilePath, buffer, (err) => {
-  //         if (err) {
-  //           console.log(err);
-  //         } else {
-  //           console.log("L'image a été enregistrée avec succès !");
-  //         }
-  //       });
-  //     } else {
-  //       console.log("Impossible de détecter le type de fichier de l'image.");
-  //     }
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // })();
-  
   try {
-    // const hashedPassword = await bcrypt.hash(req.body.Password, 10);
-    // const confirmationcode = rondom();
-
     const propriete = {
       Nom: req.body.name,
       Email: req.body.email,
@@ -351,7 +310,6 @@ transporter.sendMail(mailOptions, (error, info) => {
 }
 
 
-
 // 2. Prendre tous les clients
 const getAllClients = async (req, res) => {
   let clients = await Client.findAll({})
@@ -368,9 +326,66 @@ const getOneClient = async (req, res) => {
 // 4. Mis à jour client
 
 const updateClient = async (req, res) => {
-  let id = req.params.id
-  const client = await Client.update(req.body, { where: { id: id }})
-  res.status(200).send(client)
+  try {
+    const id = req.params.id;
+    const client = await Client.findByPk(id);
+
+    if (!client) {
+      return res.status(404).send("Client not found");
+    }
+
+    client.Nom = req.body.Nom;
+    client.Prenoms = req.body.Prenoms;
+    client.Naissance = req.body.Naissance;
+    client.Profession = req.body.Profession;
+    client.Adresse = req.body.Adresse;
+    client.Sexe = req.body.Sexe;
+    client.Telephone = req.body.Telephone;
+    client.Email = req.body.Email;
+
+    if (req.body.Photo) {
+      // Faites l'enregistrement de l'image ici
+      const uuid = require('uuid');
+      const fs = require('fs');
+      const mime = require('mime-types');
+      const filename = `${uuid.v4()}`;
+      const base64 = req.body.Photo;
+      const base64Data = base64.replace(/^data:image\/\w+;base64,/, "");
+      const buffer = Buffer.from(base64Data, 'base64');
+      const filePath = `public/${filename}`;
+
+      const mimeType = base64.split(';')[0].split(':')[1];
+      const fileExtension = mime.extension(mimeType);
+
+      if (fileExtension) {
+        const newFilePath = `${filePath}.${fileExtension}`;
+        fs.writeFile(newFilePath, buffer, (err) => {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log("L'image a été enregistrée avec succès !");
+            client.Photo = filename;
+            client.save(); // Sauvegarder le client avec la nouvelle image dans la base de données
+          }
+        });
+      } else {
+        console.log("Impossible de détecter le type de fichier de l'image.");
+      }
+    }
+
+    await client.save();
+
+    res.status(200).send(client);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+
+// update seulement le photo
+const updateClientPhoto = async (req, res) => {
+
 }
 
 // 5. Supprimer client par ID
@@ -394,5 +409,6 @@ module.exports = {
   SMS,
   mdpcode,
   session,
-  ajouterurgence
+  ajouterurgence,
+  updateClientPhoto
 }
