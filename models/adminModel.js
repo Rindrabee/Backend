@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING
         },
         Naissance: {
-            type: DataTypes.STRING
+            type: DataTypes.DATEONLY
         },
         Email: {
             type: DataTypes.STRING

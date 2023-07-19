@@ -131,6 +131,8 @@ const addGarage = async (req, res) => {
       const propriete = {
         Nom: req.body.Nom,
         Adresse: req.body.Adresse,
+        Latitude: req.body.Latitude,
+        Longitude: req.body.Longitude,
         Telephone: req.body.Telephone,
         Email: req.body.Email,
         Specialite: req.body.Specialite,
