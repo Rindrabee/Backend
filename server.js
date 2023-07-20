@@ -6,12 +6,9 @@ const { Server } = require('socket.io')
 const server = http.createServer(app)
 const Message = require('./models/MessageModel')
 const db = require('./models');
-<<<<<<< Updated upstream
 app.use(express.static('public'));
 
 
-=======
->>>>>>> Stashed changes
 
 
 const io = new Server(server, {
