@@ -6,9 +6,12 @@ const { Server } = require('socket.io')
 const server = http.createServer(app)
 const Message = require('./models/MessageModel')
 const db = require('./models');
+<<<<<<< Updated upstream
 app.use(express.static('public'));
 
 
+=======
+>>>>>>> Stashed changes
 
 
 const io = new Server(server, {
@@ -38,7 +41,7 @@ app.use(express.json({limit: '50mb'}))
 app.use(express.urlencoded({limit: '50mb',extended: true }))
 
 
-app.use(express.static("sary"));
+
 
 // routers
 const routerclt = require('./routes/clientRouter.js')
