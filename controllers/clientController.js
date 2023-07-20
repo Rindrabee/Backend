@@ -8,15 +8,17 @@ const randomText = require('random-text-generator');
 const { any } = require('joi');
 
 
+
 // TAm za nitesta message tam phone
-const accountSid = 'AC879991023407a8c08481b1b16012e216'; 
-const authToken = '28984465ee4fd81d779ca44a823e536c'; 
+const accountSid = 'AC84dd8c6a73f41515d2d6238dcc981f0f'; 
+const authToken = '41e5e95ae790f4768604e446ed9f4f21'; 
 const izaho = require('twilio')(accountSid, authToken);
 
 
 // create main Model
 const Client = db.clients;
 const Admin = db.admins;
+const Urgence = db.urgences;
 
 //Transporter
 const transporter = nodemailer.createTransport({
@@ -26,8 +28,8 @@ const transporter = nodemailer.createTransport({
     user: 'garagetahinalisoa@gmail.com',
     clientId: '644760103972-mo2ahkelp1i9i4t8v6655chbsod8tukr.apps.googleusercontent.com',
     clientSecret: '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',
-    refreshToken: '1//04OFs1sGz5T9eCgYIARAAGAQSNwF-L9IrG6UHYtDAIuXoOrEGs2gGJKCr7B67hDKQEgyB2R6saniWyvKR-Eb5s4sWJWme8i9E0o0',
-    accessToken: 'ya29.a0AbVbY6PQmF7bsJn2lthi4ooDXLOSSdDEsU380X2xpwJcz69Mw9PqBorSdEJ9m7mlmKO2EomCEpJVXzokLpj_3TCu4MqfUdXAHTgNuf86vM3XiMqicCP0B8CVDsG9EwnTcjpWBi7ch6vVilbiQCN8WG8S21xOaCgYKARASARISFQFWKvPlcaPPhdb4U-k-wXyHN22z9Q0163'
+    refreshToken: '1//04ukP6eJRigWpCgYIARAAGAQSNwF-L9IrfxMlSTlaJxLlwMfhx_NR8NOJhPGmZ7wnSw9i7MaKGDmERbfuHod_h8cWV-TvilQxBzU',
+    accessToken: 'ya29.a0AbVbY6PC-fL4NcouJxvz-nQGEMWJS1hWxo2T0YZFx_yFrrOx2p2DXYauUSNusmFvy_Uao7gsFfFRLBCz5HgKCg5VQaFzvgRX9HjZFRAkQ8FroCWuf9aISkXp4vKFyK5yCJz_8JpqgMNvyCRc1_BdpaLDhCc3aCgYKAckSARISFQFWKvPl5XYjHkLFq0QJKDWGpmZqiw0163'
   },
   tls: {
     rejectUnauthorized: false
@@ -78,7 +80,7 @@ const login = async (req, res) => {
       return res.send({ status:false,message:'Code de validation non envoyer veuillez réinscire'});
     }
    
-    const token = jwt.sign({ clientId: client.id }, 'secret_key', { expiresIn: '1h' });
+    const token = jwt.sign({ clientId: client.id }, secretKey, { expiresIn: '1h' });
 
     res.json({ status:true,token:token });
     
@@ -89,28 +91,72 @@ const login = async (req, res) => {
   }
 };
 
+// PRENDRE LE SESSION AVEC TOKEN
+const session = async (req, res) => {
+  try {
+    const token = req.headers['authorization'].split(' ')[1];
+
+    const decodedtoken = jwt.verify(token, secretKey);
+
+    const clt = await Client.findByPk(decodedtoken.clientId);
+
+    if(!clt) {
+      return res.status(401).json({message: 'Aucun trouvé'});
+    }
+    return res.json({clt: clt});
+
+  } catch(error) {
+    return res.json({message: 'Token pas trouvé'});
+  }
+};
+
+
 // Deconnexion
 const logout = async (req, res) => {
   res.status(200).json({ message: "Déconnexion réussie." });
  
 };
 
+
+//Ajouter un nouveau client
+
 const addClient = async (req, res) => {
 
-const crypto = require('crypto');
-
-// Generate a random string of 8 characters
-const randomString = crypto.randomBytes(4).toString('hex');
-
-// Create the random filename
-const filename = `${randomString}.jpg`;
-
-const base64 = req.body.Photo
-var base64Data = base64.replace(/^data:image\/png;base64,/, "");
-
-require("fs").writeFile("sary/" + filename, base64Data, 'base64', function(err) {
-  console.log(err);
-});
+  const uuid = require('uuid');
+  const fs = require('fs');
+  const mime = require('mime-types');
+  
+  // Generate a random filename using UUID
+  const filename = `${uuid.v4()}`;
+  
+  const base64 = req.body.Photo;
+  const base64Data = base64.replace(/^data:image\/\w+;base64,/, "");
+  const buffer = Buffer.from(base64Data, 'base64');
+  
+  const filePath = `public/${filename}`;
+  
+  (async () => {
+    try {
+      const mimeType = base64.split(';')[0].split(':')[1];
+      const fileExtension = mime.extension(mimeType);
+  
+      if (fileExtension) {
+        const newFilePath = `${filePath}.${fileExtension}`;
+        fs.writeFile(newFilePath, buffer, (err) => {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log("L'image a été enregistrée avec succès !");
+          }
+        });
+      } else {
+        console.log("Impossible de détecter le type de fichier de l'image.");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  })();
+  
   try {
     const hashedPassword = await bcrypt.hash(req.body.Password, 10);
     const confirmationcode = rondom();
@@ -138,7 +184,7 @@ require("fs").writeFile("sary/" + filename, base64Data, 'base64', function(err) 
     }
 
     transporter.sendMail(mailOptions, (error, info) => {
-      if(error){
+      if(error) {
         console.error(error);
         res.send('Il y a une erreur sur l/envoie de mail');
       } else {
@@ -152,6 +198,49 @@ require("fs").writeFile("sary/" + filename, base64Data, 'base64', function(err) 
     res.status(500).send("Une erreur s'est produite lors de l'ajout du client.");
   }
 };
+
+
+//Ajouter un nouveau client
+
+const ajouterurgence = async (req, res) => {
+
+  try {
+    const propriete = {
+      Nom: req.body.name,
+      Email: req.body.email,
+      Telephone: req.body.phone,
+      Adresse: req.body.address,
+      Probleme: req.body.Probleme,
+      longitude: req.body.longitude,
+      latitude: req.body.latitude,
+    };
+
+    const urgence = await Urgence.create(propriete);
+    const mailOptions = {
+      from: 'garagetahinalisoa@gmail.com',
+      to: req.body.email,
+      subject: 'URGENCE',
+      text: `Bonjour on a bien reçu votre demande d'urgence et nous cherchons maintenat à trouver une garage près de votre 
+      localisation et, ensuite eux vous contacte sur le site en envoyant une mécanicien` 
+    }
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if(error) {
+        console.error(error);
+        res.send('Il y a une erreur sur l/envoie de mail');
+      } else {
+        res.send({ statut:true, msg: 'Email envoyer' });
+      }
+    })
+    res.status(200).send(urgence);
+    console.log(urgence);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Une erreur s'est produite lors de l'ajout du client.");
+  }
+};
+
+
 //Envoyer SMS
 const SMS = async (req, res) => {
   const { destinataire } = req.body;
@@ -160,8 +249,8 @@ const SMS = async (req, res) => {
 
   izaho.messages
     .create({
-      body: admin.Password,
-      from: '+15734902946', // Remplacez par votre numéro de téléphone Twilio
+      body: "Voici votre mot de passe Mr : "  + admin.Password,
+      from: '+15312344463', // Remplacez par votre numéro de téléphone Twilio
       to: destinataire
     })
     .then(message => {
@@ -220,10 +309,6 @@ transporter.sendMail(mailOptions, (error, info) => {
   })
 }
 
-// LISTER TOUS LES CLIENTS 
-
-
-
 
 // 2. Prendre tous les clients
 const getAllClients = async (req, res) => {
@@ -241,9 +326,66 @@ const getOneClient = async (req, res) => {
 // 4. Mis à jour client
 
 const updateClient = async (req, res) => {
-  let id = req.params.id
-  const client = await Client.update(req.body, { where: { id: id }})
-  res.status(200).send(client)
+  try {
+    const id = req.params.id;
+    const client = await Client.findByPk(id);
+
+    if (!client) {
+      return res.status(404).send("Client not found");
+    }
+
+    client.Nom = req.body.Nom;
+    client.Prenoms = req.body.Prenoms;
+    client.Naissance = req.body.Naissance;
+    client.Profession = req.body.Profession;
+    client.Adresse = req.body.Adresse;
+    client.Sexe = req.body.Sexe;
+    client.Telephone = req.body.Telephone;
+    client.Email = req.body.Email;
+
+    if (req.body.Photo) {
+      // Faites l'enregistrement de l'image ici
+      const uuid = require('uuid');
+      const fs = require('fs');
+      const mime = require('mime-types');
+      const filename = `${uuid.v4()}`;
+      const base64 = req.body.Photo;
+      const base64Data = base64.replace(/^data:image\/\w+;base64,/, "");
+      const buffer = Buffer.from(base64Data, 'base64');
+      const filePath = `public/${filename}`;
+
+      const mimeType = base64.split(';')[0].split(':')[1];
+      const fileExtension = mime.extension(mimeType);
+
+      if (fileExtension) {
+        const newFilePath = `${filePath}.${fileExtension}`;
+        fs.writeFile(newFilePath, buffer, (err) => {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log("L'image a été enregistrée avec succès !");
+            client.Photo = filename;
+            client.save(); // Sauvegarder le client avec la nouvelle image dans la base de données
+          }
+        });
+      } else {
+        console.log("Impossible de détecter le type de fichier de l'image.");
+      }
+    }
+
+    await client.save();
+
+    res.status(200).send(client);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+
+// update seulement le photo
+const updateClientPhoto = async (req, res) => {
+
 }
 
 // 5. Supprimer client par ID
@@ -266,4 +408,7 @@ module.exports = {
   logout,
   SMS,
   mdpcode,
+  session,
+  ajouterurgence,
+  updateClientPhoto
 }

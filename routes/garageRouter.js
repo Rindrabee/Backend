@@ -12,6 +12,14 @@ router.post('/mdpcode', garageController.mdpcode)
 
 router.get('/listergarage', garageController.listergarage)
 
+router.post('/ajoutvoiture', garageController.ajoutvoiture)
+
+router.get('/listervoiture', garageController.listervoiture)
+
+
+router.get('/session', garageController.session)
+
+router.put('/updateGarage/:id', garageController.updateGarage)
 
 
 module.exports = router

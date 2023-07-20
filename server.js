@@ -6,7 +6,9 @@ const { Server } = require('socket.io')
 const server = http.createServer(app)
 const Message = require('./models/MessageModel')
 const db = require('./models');
-app.use(express.static('sary'));
+app.use(express.static('public'));
+
+
 
 
 const io = new Server(server, {
@@ -46,6 +48,7 @@ const routermecanicien = require('./routes/mecanicienRouter.js')
 const routepass  = require('./routes/passwordRouter.js')
 const routepass2  = require('./routes/passwordRouter2.js')
 const routepass3  = require('./routes/passwordRouter3.js')
+const routemessage  = require('./routes/messageRouter.js')
 
 
 app.use('/api/clients', routerclt) 
@@ -55,6 +58,7 @@ app.use('/api/mecaniciens', routermecanicien)
 app.use('/api/password' , routepass)
 app.use('/api/password2' , routepass2)
 app.use('/api/password3' , routepass3)
+app.use('/api/messages' , routemessage)
 
 
 // MANAO RESAKA SOCKET NA MESSAGE

@@ -10,6 +10,7 @@ const { any } = require('joi');
 
 // create main Model
 const Garage = db.garages;
+const Voiture = db.voitures;
 
 
 //Transporter
@@ -20,8 +21,8 @@ const transporter = nodemailer.createTransport({
       user: 'garagetahinalisoa@gmail.com',
       clientId: '644760103972-mo2ahkelp1i9i4t8v6655chbsod8tukr.apps.googleusercontent.com',
       clientSecret: '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',
-      refreshToken: '1//04OFs1sGz5T9eCgYIARAAGAQSNwF-L9IrG6UHYtDAIuXoOrEGs2gGJKCr7B67hDKQEgyB2R6saniWyvKR-Eb5s4sWJWme8i9E0o0',
-      accessToken: 'ya29.a0AbVbY6PQmF7bsJn2lthi4ooDXLOSSdDEsU380X2xpwJcz69Mw9PqBorSdEJ9m7mlmKO2EomCEpJVXzokLpj_3TCu4MqfUdXAHTgNuf86vM3XiMqicCP0B8CVDsG9EwnTcjpWBi7ch6vVilbiQCN8WG8S21xOaCgYKARASARISFQFWKvPlcaPPhdb4U-k-wXyHN22z9Q0163'
+      refreshToken: '1//04ukP6eJRigWpCgYIARAAGAQSNwF-L9IrfxMlSTlaJxLlwMfhx_NR8NOJhPGmZ7wnSw9i7MaKGDmERbfuHod_h8cWV-TvilQxBzU',
+      accessToken: 'ya29.a0AbVbY6PC-fL4NcouJxvz-nQGEMWJS1hWxo2T0YZFx_yFrrOx2p2DXYauUSNusmFvy_Uao7gsFfFRLBCz5HgKCg5VQaFzvgRX9HjZFRAkQ8FroCWuf9aISkXp4vKFyK5yCJz_8JpqgMNvyCRc1_BdpaLDhCc3aCgYKAckSARISFQFWKvPl5XYjHkLFq0QJKDWGpmZqiw0163'
     },
     tls: {
       rejectUnauthorized: false
@@ -72,7 +73,7 @@ const login = async (req, res) => {
     //     return res.send({ status:false,message:'Veuillez patientez'});
     //   }
      
-      const token = jwt.sign({ garageId: garage.id }, 'secret_key', { expiresIn: '1h' });
+      const token = jwt.sign({ garageId: garage.id }, secretKey , { expiresIn: '1h' });
   
       res.json({ status:true,token:token });
       
@@ -86,20 +87,43 @@ const login = async (req, res) => {
 // Ajouter garage
 
 const addGarage = async (req, res) => {
-  const crypto = require('crypto');
 
-// Generate a random string of 8 characters
-const randomString = crypto.randomBytes(4).toString('hex');
-
-// Create the random filename
-const filename = `${randomString}.jpg`;
-
-const base64 = req.body.Photo
-var base64Data = base64.replace(/^data:image\/png;base64,/, "");
-
-require("fs").writeFile("sary/" + filename, base64Data, 'base64', function(err) {
-  console.log(err);
-});
+  const uuid = require('uuid');
+  const fs = require('fs');
+  const mime = require('mime-types');
+  
+  // Generate a random filename using UUID
+  const filename = `${uuid.v4()}`;
+  
+  const base64 = req.body.Photo;
+  const base64Data = base64.replace(/^data:image\/\w+;base64,/, "");
+  const buffer = Buffer.from(base64Data, 'base64');
+  
+  const filePath = `public/${filename}`;
+  
+  (async () => {
+    try {
+      const mimeType = base64.split(';')[0].split(':')[1];
+      const fileExtension = mime.extension(mimeType);
+  
+      if (fileExtension) {
+        const newFilePath = `${filePath}.${fileExtension}`;
+        fs.writeFile(newFilePath, buffer, (err) => {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log("L'image a été enregistrée avec succès !");
+          }
+        });
+      } else {
+        console.log("Impossible de détecter le type de fichier de l'image.");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  })();
+  
+  
     try {
       const hashedPassword = await bcrypt.hash(req.body.Password, 10);
       const confirmationcode = rondom();
@@ -107,6 +131,8 @@ require("fs").writeFile("sary/" + filename, base64Data, 'base64', function(err) 
       const propriete = {
         Nom: req.body.Nom,
         Adresse: req.body.Adresse,
+        Latitude: req.body.Latitude,
+        Longitude: req.body.Longitude,
         Telephone: req.body.Telephone,
         Email: req.body.Email,
         Specialite: req.body.Specialite,
@@ -137,7 +163,7 @@ require("fs").writeFile("sary/" + filename, base64Data, 'base64', function(err) 
       }
   
       transporter.sendMail(mailOptions, (error, info) => {
-        if(error){
+        if(error) {
           console.error(error);
           res.send('Il y a une erreur sur l/envoie de mail');
         } else {
@@ -195,12 +221,176 @@ const listergarage = async (req, res) => {
     console.log(error);
   }
 }
+
+
+
+// Lister les voitures dans le garage
+const listervoiture = async (req, res) => {
+  try {
+    const voitures = await Voiture.findAll(); 
+    res.json(voitures);
+  } catch(error) {
+    res.status(500).json({ error: 'Erreur lors de la récupération' });
+    console.log(error);
+  }
+}
+
+//Ajouter voiture dans le garage
+
+const ajoutvoiture = async (req, res) => {
+
+  const uuid = require('uuid');
+  const fs = require('fs');
+  const mime = require('mime-types');
   
+  // Generate a random filename using UUID
+  const filename = `${uuid.v4()}`;
+  
+  const base64 = req.body.Photo;
+  const base64Data = base64.replace(/^data:image\/\w+;base64,/, "");
+  const buffer = Buffer.from(base64Data, 'base64');
+  
+  const filePath = `public/${filename}`;
+  
+  (async () => {
+    try {
+      const mimeType = base64.split(';')[0].split(':')[1];
+      const fileExtension = mime.extension(mimeType);
+  
+      if (fileExtension) {
+        const newFilePath = `${filePath}.${fileExtension}`;
+        fs.writeFile(newFilePath, buffer, (err) => {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log("L'image a été enregistrée avec succès !");
+          }
+        });
+      } else {
+        console.log("Impossible de détecter le type de fichier de l'image.");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  })();
+  
+    try {
+      const propriete = {
+        Numero: req.body.Numero,
+        Nom: req.body.Nom,
+        Date1: req.body.Date1,
+        Probleme: req.body.Probleme,
+        Idgarage: req.body.Idgarage,
+        Photo: filename
+      };
+  
+      const voiture = await Voiture.create(propriete);
+    
+      res.status(200).send(voiture);
+      console.log(voiture);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Une erreur s'est produite lors de l'ajout du garage.");
+    }
+}
+
+// Prendre le sessio du garage connecté
+
+// PRENDRE LE SESSION AVEC TOKEN
+const session = async (req, res) => {
+  try {
+    const token = req.headers['authorization'].split(' ')[1];
+
+    const decodedtoken = jwt.verify(token, secretKey);
+
+    const grg = await Garage.findByPk(decodedtoken.garageId);
+
+    if(!grg) {
+      return res.status(401).json({message: 'Aucun trouvé'});
+    }
+    
+    return res.json({grg: grg});
+
+  } catch(error) {
+    return res.json({message: 'Token pas trouvé'});
+  }
+}
+
+//Modification garage
+
+const updateGarage = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const garage = await Garage.findByPk(id);
+
+    if (!garage) {
+      return res.status(404).send("Mecanicien not found");
+    }
+
+    garage.Nom = req.body.Nom;
+    garage.Adresse = req.body.Adresse;
+    garage.Latitude = req.body.Latitude;
+    garage.Longitude = req.body.Longitude;
+    garage.Telephone = req.body.Telephone;
+    garage.Email = req.body.Email;
+    garage.Specialite = req.body.Specialite;
+    garage.Heures_ouverture = req.body.Heures_ouverture;
+    garage.Heures_fermeture = req.body.Heures_fermeture;
+    garage.equipement = req.body.equipement;
+    garage.service_offerte = req.body.service_offerte;
+   
+
+
+    if (req.body.Photo) {
+      // Faites l'enregistrement de l'image ici
+      const uuid = require('uuid');
+      const fs = require('fs');
+      const mime = require('mime-types');
+      const filename = `${uuid.v4()}`;
+      const base64 = req.body.Photo;
+      const base64Data = base64.replace(/^data:image\/\w+;base64,/, "");
+      const buffer = Buffer.from(base64Data, 'base64');
+      const filePath = `public/${filename}`;
+
+      const mimeType = base64.split(';')[0].split(':')[1];
+      const fileExtension = mime.extension(mimeType);
+
+      if (fileExtension) {
+        const newFilePath = `${filePath}.${fileExtension}`;
+        fs.writeFile(newFilePath, buffer, (err) => {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log("L'image a été enregistrée avec succès !");
+            garage.Photo = filename;
+            garage.save(); // Sauvegarder le client avec la nouvelle image dans la base de données
+          }
+        });
+      } else {
+        console.log("Impossible de détecter le type de fichier de l'image.");
+      }
+    }
+
+  await garage.save();
+
+  res.status(200).send(garage);
+  } catch (error) {
+  console.error(error);
+  res.status(500).send("Internal Server Error");
+  }
+};
+
+
+
 
 module.exports = {  
    login,
    addGarage,
    logout,
    mdpcode,
-   listergarage
+   listergarage,
+   ajoutvoiture,
+   listervoiture,
+   session,
+   updateGarage
 }
