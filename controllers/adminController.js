@@ -7,6 +7,7 @@ const secretKey = 'ma_clé_secrète';
 // create main Model
 const Admin = db.admins;
 const Urgence = db.urgences;
+const Client = db.clients;
 
 
 const login = async (req, res) => {
@@ -103,11 +104,20 @@ const getAllurgence = async (req, res) => {
 }
 
 
+// 3. Prendre profil
+const profilclient = async (req, res) => {
+  let id = req.params.id
+  let client = await Client.findOne({ where: { id: id }})
+  res.status(200).send(client)
+}
+
+
 module.exports = {
   login,
   logout,
   session,
   getAllAdmin,
   updateAdmin,
-  getAllurgence
+  getAllurgence,
+  profilclient
 }
