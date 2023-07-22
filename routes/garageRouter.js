@@ -21,5 +21,12 @@ router.get('/session', garageController.session)
 
 router.put('/updateGarage/:id', garageController.updateGarage)
 
+router.put('/acceptergarage/:id', garageController.acceptergarage)
+
+router.put('/bloquergarage/:id', garageController.bloquergarage)
+
+
+router.put('/deletegarage/:id', garageController.deletegarage)
+
 
 module.exports = router

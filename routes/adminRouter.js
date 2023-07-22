@@ -18,6 +18,8 @@ router.get('/profilmecanicien/:id', adminController.profilmecanicien)
 
 router.get('/profilegarage/:id', adminController.profilegarage)
 
+router.get('/detailurgence/:id', adminController.detailurgence)
+
 
 
 router.put('/updateAdmin/:id', adminController.updateAdmin)

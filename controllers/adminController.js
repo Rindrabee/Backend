@@ -105,6 +105,13 @@ const getAllurgence = async (req, res) => {
   res.status(200).send(urgences)
 }
 
+// Prendre le detail de l'urgence
+const detailurgence = async (req, res) => {
+  let id = req.params.id
+  let urgence = await Urgence.findOne({ where: { id: id }})
+  res.status(200).send(urgence)
+}
+
 
 // 3. Prendre profil client
 const profilclient = async (req, res) => {
@@ -128,7 +135,6 @@ const profilegarage = async (req, res) => {
 }
 
 
-
 module.exports = {
   login,
   logout,
@@ -138,5 +144,6 @@ module.exports = {
   getAllurgence,
   profilclient,
   profilmecanicien,
-  profilegarage
+  profilegarage,
+  detailurgence
 }

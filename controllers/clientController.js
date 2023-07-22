@@ -79,6 +79,10 @@ const login = async (req, res) => {
     if (client.Validation != 1) {
       return res.send({ status:false,message:'Code de validation non envoyer veuillez réinscire'});
     }
+
+    if(client.Etat == 1) {
+      return res.send({ status:false,message:'Vous êtes bloquer'});
+    }
    
     const token = jwt.sign({ clientId: client.id }, secretKey, { expiresIn: '1h' });
 
@@ -211,8 +215,8 @@ const ajouterurgence = async (req, res) => {
       Telephone: req.body.phone,
       Adresse: req.body.address,
       Probleme: req.body.Probleme,
-      longitude: req.body.longitude,
-      latitude: req.body.latitude,
+      Latitude: req.body.latitude,
+      Longitude: req.body.longitude,
     };
 
     const urgence = await Urgence.create(propriete);
@@ -388,6 +392,56 @@ const updateClientPhoto = async (req, res) => {
 
 }
 
+// Accepter client 
+const accepterclient = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const client = await Client.findByPk(id);
+
+    if (!client) {
+      return res.status(404).send("Client not found");
+    }
+    
+    client.Etat = null;
+    
+   
+    await client.save();
+
+    res.status(200).send(client);
+
+    } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+}
+}
+
+// Bloquer client 
+const bloquerclient = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const client = await Client.findByPk(id);
+
+    if (!client) {
+      return res.status(404).send("Client not found");
+    }
+    
+    client.Etat = 1;
+    
+   
+    await client.save();
+
+    res.status(200).send(client);
+
+    } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+}
+}
+
+
+
+
+
 // 5. Supprimer client par ID
 
 const deleteClient = async (req, res) => {
@@ -410,5 +464,7 @@ module.exports = {
   mdpcode,
   session,
   ajouterurgence,
-  updateClientPhoto
+  updateClientPhoto,
+  accepterclient,
+  bloquerclient
 }

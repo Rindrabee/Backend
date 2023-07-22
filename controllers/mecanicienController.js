@@ -67,9 +67,9 @@ const login = async (req, res) => {
         return res.send({ status:false,message:'Vérifier bien votre mot de passe' });
       }
       
-    //   if (mecanicien.Etat != 1) {
-    //     return res.send({ status:false,message:'Vous êtes pas encore approuvé'});
-    //   }
+      if (mecanicien.Etat != 1) {
+        return res.send({ status:false,message:'Veuillez patienter votre demande est en cours de traitement'});
+      }
      
       const token = jwt.sign({ mecanicienId: mecanicien.id }, secretKey, { expiresIn: '1h' });
   
@@ -301,6 +301,63 @@ const updateMecanicien = async (req, res) => {
   }
 };
 
+
+
+// Accepter mecanicien
+const acceptermecanicien = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const mecanicien = await Mecanicien.findByPk(id);
+
+    if (!mecanicien) {
+      return res.status(404).send("Mecanicien not found");
+    }
+    
+    mecanicien.Etat = 1;
+    
+   
+    await mecanicien.save();
+
+    res.status(200).send(mecanicien);
+
+    } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+}
+}
+
+// Bloquer mecanicien
+const bloquermecanicien = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const mecanicien = await Mecanicien.findByPk(id);
+
+    if (!mecanicien) {
+      return res.status(404).send("Mecanicien not found");
+    }
+    
+  mecanicien.Etat = null;
+    
+   
+  await mecanicien.save();
+
+  res.status(200).send(mecanicien);
+
+  } catch (error) {
+  console.error(error);
+  res.status(500).send("Internal Server Error");
+}
+
+}
+
+// 5. Supprimer mecanicien par ID
+
+const deletemecanicien = async (req, res) => {
+  let id = req.params.id
+  await Mecanicien.destroy({ where: { id: id }} )
+  res.status(200).send('Le mecanicien est supprimé !')
+
+}
   
 
 module.exports = {  
@@ -310,5 +367,8 @@ module.exports = {
   mdpcode,
   listermecanicien,
   session,
-  updateMecanicien
+  updateMecanicien,
+  acceptermecanicien,
+  bloquermecanicien,
+  deletemecanicien
 }

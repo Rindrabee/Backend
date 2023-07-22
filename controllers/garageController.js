@@ -69,9 +69,9 @@ const login = async (req, res) => {
         return res.send({ status:false,message:'Vérifier bien votre mot de passe' });
       }
       
-    //   if (garage.Etat != 1) {
-    //     return res.send({ status:false,message:'Veuillez patientez'});
-    //   }
+      if (garage.Etat != 1) {
+        return res.send({ status:false,message:'Veuillez patienter votre demande est en cours de traitement'});
+      }
      
       const token = jwt.sign({ garageId: garage.id }, secretKey , { expiresIn: '1h' });
   
@@ -381,16 +381,75 @@ const updateGarage = async (req, res) => {
 };
 
 
+// Accepter garage
+const acceptergarage = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const garage = await Garage.findByPk(id);
+
+    if (!garage) {
+      return res.status(404).send("Garage not found");
+    }
+    
+    garage.Etat = 1;
+    
+   
+    await garage.save();
+
+    res.status(200).send(garage);
+
+    } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+}
+}
+
+// Bloquer garage
+const bloquergarage = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const garage = await Garage.findByPk(id);
+
+    if (!garage) {
+      return res.status(404).send("Garage not found");
+    }
+    
+    garage.Etat = null;
+    
+   
+  await garage.save();
+
+  res.status(200).send(garage);
+
+  } catch (error) {
+  console.error(error);
+  res.status(500).send("Internal Server Error");
+}
+
+}
+
+// 5. Supprimer garage par ID
+
+const deletegarage = async (req, res) => {
+  let id = req.params.id
+  await Garage.destroy({ where: { id: id }} )
+  res.status(200).send('Le garage est supprimé !')
+
+}
+
 
 
 module.exports = {  
-   login,
-   addGarage,
-   logout,
-   mdpcode,
-   listergarage,
-   ajoutvoiture,
-   listervoiture,
-   session,
-   updateGarage
+  login,
+  addGarage,
+  logout,
+  mdpcode,
+  listergarage,
+  ajoutvoiture,
+  listervoiture,
+  session,
+  updateGarage,
+  acceptergarage,
+  bloquergarage,
+  deletegarage
 }

@@ -26,7 +26,11 @@ router.get('/getOneClient/:id' ,clientController.getOneClient)
 
 router.put('/updateClient/:id', clientController.updateClient)
 
+router.put('/accepterclient/:id', clientController.accepterclient)
+
 router.post('/updateClientPhoto', clientController.updateClientPhoto)
+
+router.put('/bloquerclient/:id', clientController.bloquerclient)
 
 router.delete('/:id', clientController.deleteClient)
 
