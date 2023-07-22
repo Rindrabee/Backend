@@ -218,6 +218,20 @@ const listermecanicien = async (req, res) => {
   }
 }
 
+// Compter les mecaniciens inscrits
+
+const countMecaniciens = async (req, res) => {
+  try {
+    const mecanicienCount = await Mecanicien.count();
+    res.status(200).send({ count: mecanicienCount });
+  } catch (error) {
+    res.status(500).send({ error: "Une erreur s'est produite lors du comptage des garages." });
+  }
+};
+
+
+
+
 // Prendre le session du mécanicien
 const session = async (req, res) => {
   try {
@@ -370,5 +384,6 @@ module.exports = {
   updateMecanicien,
   acceptermecanicien,
   bloquermecanicien,
-  deletemecanicien
+  deletemecanicien,
+  countMecaniciens
 }

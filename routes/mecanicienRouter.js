@@ -14,6 +14,9 @@ router.get('/listermecanicien', mecanicienController.listermecanicien)
 
 router.get('/session', mecanicienController.session)
 
+router.get('/countMecaniciens', mecanicienController.countMecaniciens)
+
+
 
 router.put('/updateMecanicien/:id', mecanicienController.updateMecanicien)
 

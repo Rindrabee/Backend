@@ -320,6 +320,29 @@ const getAllClients = async (req, res) => {
   res.status(200).send(clients)
 }
 
+
+// Compter les clients inscrits
+
+const countClients = async (req, res) => {
+  try {
+    const clientCount = await Client.count();
+    res.status(200).send({ count: clientCount });
+  } catch (error) {
+    res.status(500).send({ error: "Une erreur s'est produite lors du comptage des clients." });
+  }
+};
+
+// Compter les urgences
+
+const counturgence = async (req, res) => {
+  try {
+    const urgenceCount = await Urgence.count();
+    res.status(200).send({ count: urgenceCount });
+  } catch (error) {
+    res.status(500).send({ error: "Une erreur s'est produite lors du comptage des urgences." });
+  }
+};
+
 // 3. Prendre un seul clients
 const getOneClient = async (req, res) => {
   let id = req.params.id
@@ -466,5 +489,7 @@ module.exports = {
   ajouterurgence,
   updateClientPhoto,
   accepterclient,
-  bloquerclient
+  bloquerclient,
+  countClients,
+  counturgence
 }

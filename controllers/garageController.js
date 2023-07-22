@@ -222,6 +222,16 @@ const listergarage = async (req, res) => {
   }
 }
 
+// Compter les garages inscrits
+
+const countGarages = async (req, res) => {
+  try {
+    const garageCount = await Garage.count();
+    res.status(200).send({ count: garageCount });
+  } catch (error) {
+    res.status(500).send({ error: "Une erreur s'est produite lors du comptage des garages." });
+  }
+};
 
 
 // Lister les voitures dans le garage
@@ -234,6 +244,18 @@ const listervoiture = async (req, res) => {
     console.log(error);
   }
 }
+
+// Compter les voitures ajouter
+
+const countVoiture = async (req, res) => {
+  try {
+    const voitureCount = await Voiture.count();
+    res.status(200).send({ count: voitureCount });
+  } catch (error) {
+    res.status(500).send({ error: "Une erreur s'est produite lors du comptage des voitures." });
+  }
+};
+
 
 //Ajouter voiture dans le garage
 
@@ -451,5 +473,7 @@ module.exports = {
   updateGarage,
   acceptergarage,
   bloquergarage,
-  deletegarage
+  deletegarage,
+  countGarages,
+  countVoiture
 }
