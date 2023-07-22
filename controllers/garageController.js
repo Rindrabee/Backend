@@ -21,8 +21,8 @@ const transporter = nodemailer.createTransport({
       user: 'garagetahinalisoa@gmail.com',
       clientId: '644760103972-mo2ahkelp1i9i4t8v6655chbsod8tukr.apps.googleusercontent.com',
       clientSecret: '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',
-      refreshToken: '1//04ukP6eJRigWpCgYIARAAGAQSNwF-L9IrfxMlSTlaJxLlwMfhx_NR8NOJhPGmZ7wnSw9i7MaKGDmERbfuHod_h8cWV-TvilQxBzU',
-      accessToken: 'ya29.a0AbVbY6PC-fL4NcouJxvz-nQGEMWJS1hWxo2T0YZFx_yFrrOx2p2DXYauUSNusmFvy_Uao7gsFfFRLBCz5HgKCg5VQaFzvgRX9HjZFRAkQ8FroCWuf9aISkXp4vKFyK5yCJz_8JpqgMNvyCRc1_BdpaLDhCc3aCgYKAckSARISFQFWKvPl5XYjHkLFq0QJKDWGpmZqiw0163'
+      refreshToken: '1//04gJSg8jYYPDaCgYIARAAGAQSNwF-L9IrT1xI-Oi_lNS6pNKj7GTwKAgsa3gA4zNrjy7Nz13qlpPo0VfWOU8gy5SzJRVnJ87DHPk',
+      accessToken: 'ya29.a0AbVbY6MI0KkDKxVctveFjtgvNyHAXIklSIagGRDubzYZVCuN2shGkRMydOyHrThmbKya3lYI27uDWYctX5bRxXE0u4yZpUNIVa54Gb3cQg_Uab0ygIlEizmEIpXrrTGZmXqq1hecru5FZ5rgOT9-3cqrCaCpaCgYKATASARISFQFWKvPl3ZNqGCT8PTYN4n0GsDivDA0163'
     },
     tls: {
       rejectUnauthorized: false
@@ -149,13 +149,13 @@ const addGarage = async (req, res) => {
         from: 'garagetahinalisoa@gmail.com',
         to: req.body.Email,
         subject: 'Bienvenue et attente de confirmation',
-        text: `Cher/Chère [Nom de l'inscrit(e)],
+        text: `Cher/Chère `+ req.body.Nom +`,
 
         Bienvenue dans notre communauté ! Nous sommes ravis de vous accueillir parmi nous. Suite à votre entretien, nous tenions à vous informer que nous devons encore attendre la confirmation de l'administrateur avant de finaliser votre inscription.
         
-        Nous avons été impressionnés par votre profil et votre intérêt pour [mentionner le domaine/pôle d'activité]. Nous sommes actuellement en attente de la décision de l'administrateur, qui examinera votre entretien attentivement. Nous vous prions de patienter quelques jours supplémentaires jusqu'à ce que nous puissions vous fournir une réponse définitive.
+        Nous avons été impressionnés par votre profil. Nous sommes actuellement en attente de la décision de l'administrateur, qui examinera votre entretien attentivement. Nous vous prions de patienter quelques jours supplémentaires jusqu'à ce que nous puissions vous fournir une réponse définitive.
         
-        Si vous avez des questions ou des préoccupations, n'hésitez pas à nous contacter à [adresse e-mail de contact]. Nous sommes là pour vous aider.
+        Si vous avez des questions ou des préoccupations, n'hésitez pas à nous contacter à 0341790551. Nous sommes là pour vous aider.
         
         Nous vous remercions encore une fois pour votre intérêt et votre candidature. Nous sommes impatients de vous accueillir officiellement dans notre communauté.
         

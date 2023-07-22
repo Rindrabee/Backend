@@ -8,6 +8,8 @@ const secretKey = 'ma_clé_secrète';
 const Admin = db.admins;
 const Urgence = db.urgences;
 const Client = db.clients;
+const Mecanicien = db.mecaniciens;
+const Garage = db.garages;
 
 
 const login = async (req, res) => {
@@ -104,12 +106,27 @@ const getAllurgence = async (req, res) => {
 }
 
 
-// 3. Prendre profil
+// 3. Prendre profil client
 const profilclient = async (req, res) => {
   let id = req.params.id
   let client = await Client.findOne({ where: { id: id }})
   res.status(200).send(client)
 }
+
+// 3. Prendre profil mecanicien
+const profilmecanicien = async (req, res) => {
+  let id = req.params.id
+  let mecanicien = await Mecanicien.findOne({ where: { id: id }})
+  res.status(200).send(mecanicien)
+}
+
+//4. Prendre profil garages
+const profilegarage = async (req, res) => {
+  let id = req.params.id
+  let garage = await Garage.findOne({ where: { id: id }})
+  res.status(200).send(garage)
+}
+
 
 
 module.exports = {
@@ -119,5 +136,7 @@ module.exports = {
   getAllAdmin,
   updateAdmin,
   getAllurgence,
-  profilclient
+  profilclient,
+  profilmecanicien,
+  profilegarage
 }

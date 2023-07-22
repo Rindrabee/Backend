@@ -19,8 +19,8 @@ const transporter = nodemailer.createTransport({
       user: 'garagetahinalisoa@gmail.com',
       clientId: '644760103972-mo2ahkelp1i9i4t8v6655chbsod8tukr.apps.googleusercontent.com',
       clientSecret: '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',
-      refreshToken: '1//04ukP6eJRigWpCgYIARAAGAQSNwF-L9IrfxMlSTlaJxLlwMfhx_NR8NOJhPGmZ7wnSw9i7MaKGDmERbfuHod_h8cWV-TvilQxBzU',
-      accessToken: 'ya29.a0AbVbY6PC-fL4NcouJxvz-nQGEMWJS1hWxo2T0YZFx_yFrrOx2p2DXYauUSNusmFvy_Uao7gsFfFRLBCz5HgKCg5VQaFzvgRX9HjZFRAkQ8FroCWuf9aISkXp4vKFyK5yCJz_8JpqgMNvyCRc1_BdpaLDhCc3aCgYKAckSARISFQFWKvPl5XYjHkLFq0QJKDWGpmZqiw0163'
+      refreshToken: '1//04gJSg8jYYPDaCgYIARAAGAQSNwF-L9IrT1xI-Oi_lNS6pNKj7GTwKAgsa3gA4zNrjy7Nz13qlpPo0VfWOU8gy5SzJRVnJ87DHPk',
+      accessToken: 'ya29.a0AbVbY6MI0KkDKxVctveFjtgvNyHAXIklSIagGRDubzYZVCuN2shGkRMydOyHrThmbKya3lYI27uDWYctX5bRxXE0u4yZpUNIVa54Gb3cQg_Uab0ygIlEizmEIpXrrTGZmXqq1hecru5FZ5rgOT9-3cqrCaCpaCgYKATASARISFQFWKvPl3ZNqGCT8PTYN4n0GsDivDA0163'
     },
     tls: {
       rejectUnauthorized: false
@@ -147,7 +147,7 @@ const addMecanicien = async (req, res) => {
         from: 'garagetahinalisoa@gmail.com',
         to: req.body.Email,
         subject: 'Bienvenue et attente de confirmation',
-        text: `Cher/Chère [Nom de l'inscrit(e)],
+        text: `Cher/Chère `+req.body.Nom+`,
 
         Nous vous félicitons pour votre inscription réussie à notre communauté ! Nous sommes impatients de vous accueillir officiellement parmi nous. Nous souhaitons vous informer que votre profil a été sélectionné et nous avons le plaisir de vous convier à un entretien.
         
@@ -159,14 +159,11 @@ const addMecanicien = async (req, res) => {
         
         Encore une fois, nous vous remercions pour votre intérêt et votre candidature. Nous avons hâte de vous rencontrer lors de l'entretien et de discuter de votre possible intégration au sein de notre communauté.
         
-        Cordialement,
-        [Votre nom]
-        [Votre titre/poste]
-        [Nom de l'entreprise/organisation]` 
+        Cordialement,` 
       }
   
       transporter.sendMail(mailOptions, (error, info) => {
-        if(error){
+        if(error) {
           console.error(error);
           res.send('Il y a une erreur sur l/envoie de mail');
         } else {
