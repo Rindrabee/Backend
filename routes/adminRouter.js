@@ -24,6 +24,8 @@ router.get('/detailurgence/:id', adminController.detailurgence)
 
 router.put('/updateAdmin/:id', adminController.updateAdmin)
 
+router.post('/redirectToGarage', adminController.redirectToGarage)
 
+router.post('/redirectToMecanicien', adminController.redirectToGarage)
 
 module.exports = router

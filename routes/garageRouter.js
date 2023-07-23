@@ -31,5 +31,6 @@ router.put('/bloquergarage/:id', garageController.bloquergarage)
 
 router.put('/deletegarage/:id', garageController.deletegarage)
 
+router.get('/getAllUrgenceGarage', garageController.getAllUrgenceGarage)
 
 module.exports = router

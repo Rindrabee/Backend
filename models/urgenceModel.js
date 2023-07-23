@@ -26,6 +26,12 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BOOLEAN,
             default: false
         },
+        id_garage: {
+            type: DataTypes.INTEGER
+        },
+        id_mecanicien: {
+            type: DataTypes.INTEGER
+        },
     })
 
     return Urgence
