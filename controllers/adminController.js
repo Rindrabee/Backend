@@ -114,6 +114,7 @@ const getAllurgence = async (req, res) => {
   res.status(200).send(urgences);
 }
 
+
 // Prendre le detail de l'urgence
 const detailurgence = async (req, res) => {
   let id = req.params.id

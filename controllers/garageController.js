@@ -11,7 +11,7 @@ const { any } = require('joi');
 // create main Model
 const Garage = db.garages;
 const Voiture = db.voitures;
-
+const Urgence = db.urgences;
 
 //Transporter
 const transporter = nodemailer.createTransport({
@@ -459,7 +459,21 @@ const deletegarage = async (req, res) => {
 
 }
 
-
+const getAllUrgenceGarage = async (req, res) => {
+  const token = req.headers['authorization'].split(' ')[1];
+  const decodedtoken = jwt.verify(token, secretKey);
+  
+  conditions = {
+    'id_garage': decodedtoken.garageId,
+    'Etat': 2
+  };
+  
+  let urgences = await Urgence.findAll({
+    where: conditions
+  });
+  
+  res.status(200).send(urgences);
+}
 
 module.exports = {  
   login,
@@ -475,5 +489,6 @@ module.exports = {
   bloquergarage,
   deletegarage,
   countGarages,
-  countVoiture
+  countVoiture,
+  getAllUrgenceGarage
 }
