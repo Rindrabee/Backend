@@ -7,6 +7,9 @@ const secretKey = 'ma_clé_secrète';
 // create main Model
 const Admin = db.admins;
 const Urgence = db.urgences;
+const Client = db.clients;
+const Mecanicien = db.mecaniciens;
+const Garage = db.garages;
 
 
 const login = async (req, res) => {
@@ -102,6 +105,35 @@ const getAllurgence = async (req, res) => {
   res.status(200).send(urgences)
 }
 
+// Prendre le detail de l'urgence
+const detailurgence = async (req, res) => {
+  let id = req.params.id
+  let urgence = await Urgence.findOne({ where: { id: id }})
+  res.status(200).send(urgence)
+}
+
+
+// 3. Prendre profil client
+const profilclient = async (req, res) => {
+  let id = req.params.id
+  let client = await Client.findOne({ where: { id: id }})
+  res.status(200).send(client)
+}
+
+// 3. Prendre profil mecanicien
+const profilmecanicien = async (req, res) => {
+  let id = req.params.id
+  let mecanicien = await Mecanicien.findOne({ where: { id: id }})
+  res.status(200).send(mecanicien)
+}
+
+//4. Prendre profil garages
+const profilegarage = async (req, res) => {
+  let id = req.params.id
+  let garage = await Garage.findOne({ where: { id: id }})
+  res.status(200).send(garage)
+}
+
 
 module.exports = {
   login,
@@ -109,5 +141,9 @@ module.exports = {
   session,
   getAllAdmin,
   updateAdmin,
-  getAllurgence
+  getAllurgence,
+  profilclient,
+  profilmecanicien,
+  profilegarage,
+  detailurgence
 }

@@ -37,9 +37,12 @@ module.exports = (sequelize, DataTypes) => {
         Validation: {
             type: DataTypes.BOOLEAN,
             default: false
+        },
+        Etat: {
+            type: DataTypes.BOOLEAN,
+            default: false
         }
         
-      
 
     })
 

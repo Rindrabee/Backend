@@ -12,6 +12,14 @@ router.get('/session', adminController.session)
 
 router.get('/getAllurgence', adminController.getAllurgence)
 
+router.get('/profilclient/:id', adminController.profilclient)
+
+router.get('/profilmecanicien/:id', adminController.profilmecanicien)
+
+router.get('/profilegarage/:id', adminController.profilegarage)
+
+router.get('/detailurgence/:id', adminController.detailurgence)
+
 
 
 router.put('/updateAdmin/:id', adminController.updateAdmin)

@@ -19,8 +19,8 @@ const transporter = nodemailer.createTransport({
       user: 'garagetahinalisoa@gmail.com',
       clientId: '644760103972-mo2ahkelp1i9i4t8v6655chbsod8tukr.apps.googleusercontent.com',
       clientSecret: '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',
-      refreshToken: '1//04ukP6eJRigWpCgYIARAAGAQSNwF-L9IrfxMlSTlaJxLlwMfhx_NR8NOJhPGmZ7wnSw9i7MaKGDmERbfuHod_h8cWV-TvilQxBzU',
-      accessToken: 'ya29.a0AbVbY6PC-fL4NcouJxvz-nQGEMWJS1hWxo2T0YZFx_yFrrOx2p2DXYauUSNusmFvy_Uao7gsFfFRLBCz5HgKCg5VQaFzvgRX9HjZFRAkQ8FroCWuf9aISkXp4vKFyK5yCJz_8JpqgMNvyCRc1_BdpaLDhCc3aCgYKAckSARISFQFWKvPl5XYjHkLFq0QJKDWGpmZqiw0163'
+      refreshToken: '1//04gJSg8jYYPDaCgYIARAAGAQSNwF-L9IrT1xI-Oi_lNS6pNKj7GTwKAgsa3gA4zNrjy7Nz13qlpPo0VfWOU8gy5SzJRVnJ87DHPk',
+      accessToken: 'ya29.a0AbVbY6MI0KkDKxVctveFjtgvNyHAXIklSIagGRDubzYZVCuN2shGkRMydOyHrThmbKya3lYI27uDWYctX5bRxXE0u4yZpUNIVa54Gb3cQg_Uab0ygIlEizmEIpXrrTGZmXqq1hecru5FZ5rgOT9-3cqrCaCpaCgYKATASARISFQFWKvPl3ZNqGCT8PTYN4n0GsDivDA0163'
     },
     tls: {
       rejectUnauthorized: false
@@ -67,9 +67,9 @@ const login = async (req, res) => {
         return res.send({ status:false,message:'Vérifier bien votre mot de passe' });
       }
       
-    //   if (mecanicien.Etat != 1) {
-    //     return res.send({ status:false,message:'Vous êtes pas encore approuvé'});
-    //   }
+      if (mecanicien.Etat != 1) {
+        return res.send({ status:false,message:'Veuillez patienter votre demande est en cours de traitement'});
+      }
      
       const token = jwt.sign({ mecanicienId: mecanicien.id }, secretKey, { expiresIn: '1h' });
   
@@ -147,7 +147,7 @@ const addMecanicien = async (req, res) => {
         from: 'garagetahinalisoa@gmail.com',
         to: req.body.Email,
         subject: 'Bienvenue et attente de confirmation',
-        text: `Cher/Chère [Nom de l'inscrit(e)],
+        text: `Cher/Chère `+req.body.Nom+`,
 
         Nous vous félicitons pour votre inscription réussie à notre communauté ! Nous sommes impatients de vous accueillir officiellement parmi nous. Nous souhaitons vous informer que votre profil a été sélectionné et nous avons le plaisir de vous convier à un entretien.
         
@@ -159,14 +159,11 @@ const addMecanicien = async (req, res) => {
         
         Encore une fois, nous vous remercions pour votre intérêt et votre candidature. Nous avons hâte de vous rencontrer lors de l'entretien et de discuter de votre possible intégration au sein de notre communauté.
         
-        Cordialement,
-        [Votre nom]
-        [Votre titre/poste]
-        [Nom de l'entreprise/organisation]` 
+        Cordialement,` 
       }
   
       transporter.sendMail(mailOptions, (error, info) => {
-        if(error){
+        if(error) {
           console.error(error);
           res.send('Il y a une erreur sur l/envoie de mail');
         } else {
@@ -220,6 +217,20 @@ const listermecanicien = async (req, res) => {
     console.log(error);
   }
 }
+
+// Compter les mecaniciens inscrits
+
+const countMecaniciens = async (req, res) => {
+  try {
+    const mecanicienCount = await Mecanicien.count();
+    res.status(200).send({ count: mecanicienCount });
+  } catch (error) {
+    res.status(500).send({ error: "Une erreur s'est produite lors du comptage des garages." });
+  }
+};
+
+
+
 
 // Prendre le session du mécanicien
 const session = async (req, res) => {
@@ -304,6 +315,63 @@ const updateMecanicien = async (req, res) => {
   }
 };
 
+
+
+// Accepter mecanicien
+const acceptermecanicien = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const mecanicien = await Mecanicien.findByPk(id);
+
+    if (!mecanicien) {
+      return res.status(404).send("Mecanicien not found");
+    }
+    
+    mecanicien.Etat = 1;
+    
+   
+    await mecanicien.save();
+
+    res.status(200).send(mecanicien);
+
+    } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+}
+}
+
+// Bloquer mecanicien
+const bloquermecanicien = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const mecanicien = await Mecanicien.findByPk(id);
+
+    if (!mecanicien) {
+      return res.status(404).send("Mecanicien not found");
+    }
+    
+  mecanicien.Etat = null;
+    
+   
+  await mecanicien.save();
+
+  res.status(200).send(mecanicien);
+
+  } catch (error) {
+  console.error(error);
+  res.status(500).send("Internal Server Error");
+}
+
+}
+
+// 5. Supprimer mecanicien par ID
+
+const deletemecanicien = async (req, res) => {
+  let id = req.params.id
+  await Mecanicien.destroy({ where: { id: id }} )
+  res.status(200).send('Le mecanicien est supprimé !')
+
+}
   
 
 module.exports = {  
@@ -313,5 +381,9 @@ module.exports = {
   mdpcode,
   listermecanicien,
   session,
-  updateMecanicien
+  updateMecanicien,
+  acceptermecanicien,
+  bloquermecanicien,
+  deletemecanicien,
+  countMecaniciens
 }

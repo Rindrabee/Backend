@@ -28,8 +28,8 @@ const transporter = nodemailer.createTransport({
     user: 'garagetahinalisoa@gmail.com',
     clientId: '644760103972-mo2ahkelp1i9i4t8v6655chbsod8tukr.apps.googleusercontent.com',
     clientSecret: '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',
-    refreshToken: '1//04ukP6eJRigWpCgYIARAAGAQSNwF-L9IrfxMlSTlaJxLlwMfhx_NR8NOJhPGmZ7wnSw9i7MaKGDmERbfuHod_h8cWV-TvilQxBzU',
-    accessToken: 'ya29.a0AbVbY6PC-fL4NcouJxvz-nQGEMWJS1hWxo2T0YZFx_yFrrOx2p2DXYauUSNusmFvy_Uao7gsFfFRLBCz5HgKCg5VQaFzvgRX9HjZFRAkQ8FroCWuf9aISkXp4vKFyK5yCJz_8JpqgMNvyCRc1_BdpaLDhCc3aCgYKAckSARISFQFWKvPl5XYjHkLFq0QJKDWGpmZqiw0163'
+    refreshToken: '1//04gJSg8jYYPDaCgYIARAAGAQSNwF-L9IrT1xI-Oi_lNS6pNKj7GTwKAgsa3gA4zNrjy7Nz13qlpPo0VfWOU8gy5SzJRVnJ87DHPk',
+    accessToken: 'ya29.a0AbVbY6MI0KkDKxVctveFjtgvNyHAXIklSIagGRDubzYZVCuN2shGkRMydOyHrThmbKya3lYI27uDWYctX5bRxXE0u4yZpUNIVa54Gb3cQg_Uab0ygIlEizmEIpXrrTGZmXqq1hecru5FZ5rgOT9-3cqrCaCpaCgYKATASARISFQFWKvPl3ZNqGCT8PTYN4n0GsDivDA0163'
   },
   tls: {
     rejectUnauthorized: false
@@ -78,6 +78,10 @@ const login = async (req, res) => {
     
     if (client.Validation != 1) {
       return res.send({ status:false,message:'Code de validation non envoyer veuillez réinscire'});
+    }
+
+    if(client.Etat == 1) {
+      return res.send({ status:false,message:'Vous êtes bloquer'});
     }
    
     const token = jwt.sign({ clientId: client.id }, secretKey, { expiresIn: '1h' });
@@ -211,8 +215,8 @@ const ajouterurgence = async (req, res) => {
       Telephone: req.body.phone,
       Adresse: req.body.address,
       Probleme: req.body.Probleme,
-      longitude: req.body.longitude,
-      latitude: req.body.latitude,
+      Latitude: req.body.latitude,
+      Longitude: req.body.longitude,
     };
 
     const urgence = await Urgence.create(propriete);
@@ -316,6 +320,29 @@ const getAllClients = async (req, res) => {
   res.status(200).send(clients)
 }
 
+
+// Compter les clients inscrits
+
+const countClients = async (req, res) => {
+  try {
+    const clientCount = await Client.count();
+    res.status(200).send({ count: clientCount });
+  } catch (error) {
+    res.status(500).send({ error: "Une erreur s'est produite lors du comptage des clients." });
+  }
+};
+
+// Compter les urgences
+
+const counturgence = async (req, res) => {
+  try {
+    const urgenceCount = await Urgence.count();
+    res.status(200).send({ count: urgenceCount });
+  } catch (error) {
+    res.status(500).send({ error: "Une erreur s'est produite lors du comptage des urgences." });
+  }
+};
+
 // 3. Prendre un seul clients
 const getOneClient = async (req, res) => {
   let id = req.params.id
@@ -388,6 +415,56 @@ const updateClientPhoto = async (req, res) => {
 
 }
 
+// Accepter client 
+const accepterclient = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const client = await Client.findByPk(id);
+
+    if (!client) {
+      return res.status(404).send("Client not found");
+    }
+    
+    client.Etat = null;
+    
+   
+    await client.save();
+
+    res.status(200).send(client);
+
+    } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+}
+}
+
+// Bloquer client 
+const bloquerclient = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const client = await Client.findByPk(id);
+
+    if (!client) {
+      return res.status(404).send("Client not found");
+    }
+    
+    client.Etat = 1;
+    
+   
+    await client.save();
+
+    res.status(200).send(client);
+
+    } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+}
+}
+
+
+
+
+
 // 5. Supprimer client par ID
 
 const deleteClient = async (req, res) => {
@@ -410,5 +487,9 @@ module.exports = {
   mdpcode,
   session,
   ajouterurgence,
-  updateClientPhoto
+  updateClientPhoto,
+  accepterclient,
+  bloquerclient,
+  countClients,
+  counturgence
 }

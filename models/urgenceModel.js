@@ -16,11 +16,11 @@ module.exports = (sequelize, DataTypes) => {
         Probleme: {
             type: DataTypes.STRING
         },
-        longitude: {
-            type: DataTypes.STRING
+        Latitude: {
+            type: DataTypes.FLOAT 
         },
-        latitude: {
-            type: DataTypes.STRING
+        Longitude: {
+            type: DataTypes.FLOAT 
         },
         Etat: {
             type: DataTypes.BOOLEAN,
