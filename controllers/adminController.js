@@ -101,17 +101,8 @@ const getAllAdmin = async (req, res) => {
 
 // Lister tous les urgences
 const getAllurgence = async (req, res) => {
-  conditions = {};
-
-  if (req.query.Etat) {
-    conditions['Etat'] = req.query.Etat;  
-  }
-  
-  let urgences = await Urgence.findAll({
-    where: conditions
-  });
-  
-  res.status(200).send(urgences);
+  let urgences = await Urgence.findAll({})
+  res.status(200).send(urgences)
 }
 
 
@@ -148,32 +139,33 @@ const redirectToGarage = async (req, res) => {
   let idGarage = req.body.idGarage;
   let idUrgence = req.body.idUrgence;
 
-  urgence = await Urgence.findOne({
-    id: idUrgence
-  });
+  let  urgences = await Urgence.findByPk(idUrgence)
 
-  urgence.id_garage = idGarage;
-  urgence.Etat = 2; // 2 garage
+  urgences.id_garage = idGarage;
+  urgences.Etat = 2; // 2 garage
   
-  await urgence.save();
+  await urgences.save();
 
-  return res.status(200).send(urgence);
+  return res.status(200).send(urgences);
+
 };
+
+
 
 const redirectToMecanicien = async (req, res) => {
   let idMecanicien = req.body.idMecanicien;
   let idUrgence = req.body.idUrgence;
 
-  urgence = await Urgence.findOne({
+  let urgences = await Urgence.findOne({
     id: idUrgence
   });
 
-  urgence.id_mecanicien = idMecanicien;
-  urgence.Etat = 2; // 3 Mecanicien
+  urgences.id_mecanicien = idMecanicien;
+  urgences.Etat = 2; // 3 Mecanicien
   
-  await urgence.save();
+  await urgences.save();
 
-  return res.status(200).send(urgence);
+  return res.status(200).send(urgences);
 };
 
 module.exports = {
