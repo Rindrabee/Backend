@@ -101,8 +101,17 @@ const getAllAdmin = async (req, res) => {
 
 // Lister tous les urgences
 const getAllurgence = async (req, res) => {
-  let urgences = await Urgence.findAll({})
-  res.status(200).send(urgences)
+  conditions = {};
+
+  if (req.query.Etat) {
+    conditions['Etat'] = req.query.Etat;  
+  }
+  
+  let urgences = await Urgence.findAll({
+    where: conditions
+  });
+  
+  res.status(200).send(urgences);
 }
 
 // Prendre le detail de l'urgence
@@ -134,6 +143,37 @@ const profilegarage = async (req, res) => {
   res.status(200).send(garage)
 }
 
+const redirectToGarage = async (req, res) => {
+  let idGarage = req.body.idGarage;
+  let idUrgence = req.body.idUrgence;
+
+  urgence = await Urgence.findOne({
+    id: idUrgence
+  });
+
+  urgence.id_garage = idGarage;
+  urgence.Etat = 2; // 2 garage
+  
+  await urgence.save();
+
+  return res.status(200).send(urgence);
+};
+
+const redirectToMecanicien = async (req, res) => {
+  let idMecanicien = req.body.idMecanicien;
+  let idUrgence = req.body.idUrgence;
+
+  urgence = await Urgence.findOne({
+    id: idUrgence
+  });
+
+  urgence.id_mecanicien = idMecanicien;
+  urgence.Etat = 2; // 3 Mecanicien
+  
+  await urgence.save();
+
+  return res.status(200).send(urgence);
+};
 
 module.exports = {
   login,
@@ -145,5 +185,7 @@ module.exports = {
   profilclient,
   profilmecanicien,
   profilegarage,
-  detailurgence
+  detailurgence,
+  redirectToGarage,
+  redirectToMecanicien
 }
