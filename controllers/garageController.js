@@ -12,6 +12,7 @@ const { any } = require('joi');
 const Garage = db.garages;
 const Voiture = db.voitures;
 const Urgence = db.urgences;
+const Mecanicien = db.mecaniciens;
 
 //Transporter
 const transporter = nodemailer.createTransport({
@@ -450,6 +451,81 @@ const bloquergarage = async (req, res) => {
 
 }
 
+
+// Accepter mécanicien
+const acceptmec = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const mecanicien = await Mecanicien.findByPk(id);
+
+    if (!mecanicien) {
+      return res.status(404).send("Mecanicien not found");
+    }
+    
+    mecanicien.Etat2 = 1;
+    
+   
+  await mecanicien.save();
+
+  res.status(200).send(mecanicien);
+
+  } catch (error) {
+  console.error(error);
+  res.status(500).send("Internal Server Error");
+}
+
+}
+// Reffuser  mécanicien
+const reffusermec = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const mecanicien = await Mecanicien.findByPk(id);
+
+    if (!mecanicien) {
+      return res.status(404).send("Mecanicien not found");
+    }
+    
+    mecanicien.id_garage = null;
+    
+   
+  await mecanicien.save();
+
+  res.status(200).send(mecanicien);
+
+  } catch (error) {
+  console.error(error);
+  res.status(500).send("Internal Server Error");
+}
+
+}
+
+// Accepter mécanicien
+const bloquermec = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const mecanicien = await Mecanicien.findByPk(id);
+
+    if (!mecanicien) {
+      return res.status(404).send("Mecanicien not found");
+    }
+    
+    mecanicien.Etat2 = null;
+    
+   
+  await mecanicien.save();
+
+  res.status(200).send(mecanicien);
+
+  } catch (error) {
+  console.error(error);
+  res.status(500).send("Internal Server Error");
+}
+
+}
+
+
+
+
 // 5. Supprimer garage par ID
 
 const deletegarage = async (req, res) => {
@@ -490,5 +566,8 @@ module.exports = {
   deletegarage,
   countGarages,
   countVoiture,
-  getAllUrgenceGarage
+  getAllUrgenceGarage,
+  acceptmec,
+  reffusermec,
+  bloquermec
 }

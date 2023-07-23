@@ -42,7 +42,13 @@ module.exports = (sequelize, DataTypes) => {
         },
         Etat: {
             type: DataTypes.BOOLEAN
-        }
+        },
+        Etat2: {
+            type: DataTypes.BOOLEAN
+        },
+        id_garage: {
+            type: DataTypes.INTEGER
+        },
 
     })
 

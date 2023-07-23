@@ -304,7 +304,7 @@ const updateMecanicien = async (req, res) => {
       } else {
         console.log("Impossible de détecter le type de fichier de l'image.");
       }
-    }
+  }
 
     await mecanicien.save();
 
@@ -364,6 +364,32 @@ const bloquermecanicien = async (req, res) => {
 
 }
 
+
+// s'inscire dans une garage
+const inscriregarage = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const mecanicien = await Mecanicien.findByPk(id);
+
+    if (!mecanicien) {
+      return res.status(404).send("Mecanicien not found");
+    }
+    
+    mecanicien.id_garage = req.body.id_garage;
+    
+   
+    await mecanicien.save();
+
+    res.status(200).send(mecanicien);
+
+    } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+}
+}
+
+
+
 // 5. Supprimer mecanicien par ID
 
 const deletemecanicien = async (req, res) => {
@@ -385,5 +411,6 @@ module.exports = {
   acceptermecanicien,
   bloquermecanicien,
   deletemecanicien,
-  countMecaniciens
+  countMecaniciens,
+  inscriregarage
 }

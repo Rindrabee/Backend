@@ -27,7 +27,13 @@ router.put('/updateGarage/:id', garageController.updateGarage)
 
 router.put('/acceptergarage/:id', garageController.acceptergarage)
 
+router.put('/acceptmec/:id', garageController.acceptmec)
+
+router.put('/reffusermec/:id', garageController.reffusermec)
+
 router.put('/bloquergarage/:id', garageController.bloquergarage)
+
+router.put('/bloquermec/:id', garageController.bloquermec)
 
 router.put('/deletegarage/:id', garageController.deletegarage)
 
