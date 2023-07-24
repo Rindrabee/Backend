@@ -38,6 +38,7 @@ db.admins = require('./adminModel.js')(sequelize, DataTypes)
 db.mecaniciens = require('./mecanicienModel.js')(sequelize, DataTypes)
 db.garages = require('./garageModel.js')(sequelize, DataTypes)
 db.messages = require('./MessageModel.js')(sequelize, DataTypes)
+db.messages2 = require('./Message2Model.js')(sequelize, DataTypes)
 db.voitures = require('./voitureModel.js')(sequelize, DataTypes)
 db.urgences =  require('./urgenceModel.js')(sequelize, DataTypes)
 

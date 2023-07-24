@@ -65,7 +65,7 @@ app.use('/api/messages' , routemessage)
 io.on('connection', (socket) => {
     console.log(`user ${socket.id} is connected`);
   
-    // Réception d'un message
+    // Discussion client et admin
     socket.on('chat message', async (data) => {
       console.log('Message received:', data);
   
@@ -85,6 +85,32 @@ io.on('connection', (socket) => {
         console.error('Error saving message to database:', error);
       }
     });
+
+
+    // Discussion urgence et mecaniciens
+    socket.on('mandefa message', async (data) => {
+      console.log('Message received:', data);
+  
+      try {
+        // Création d'une nouvelle entrée dans la table des messages avec Sequelize
+        const message = await db.messages2.create({
+          Text: data.Text,
+          id_senderclient: data.id_senderclient,
+          id_receivedclient: data.id_receivedclient,
+          id_sendermecanicien: data.id_sendermecanicien,
+          id_receivedmecanicien: data.id_receivedmecanicien,
+        });
+  
+        console.log('Message saved to database:', message);
+  
+        // Envoi du message à tous les utilisateurs connectés
+        io.emit('chat message', message);
+      } catch (error) {
+        console.error('Error saving message to database:', error);
+      }
+    });
+
+
   
     socket.on('disconnect', () => {
       console.log(`user ${socket.id} is left`);
