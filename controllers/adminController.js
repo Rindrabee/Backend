@@ -151,21 +151,26 @@ const redirectToGarage = async (req, res) => {
 };
 
 
+// envoyer vers le mecanicien
 
 const redirectToMecanicien = async (req, res) => {
   let idMecanicien = req.body.idMecanicien;
   let idUrgence = req.body.idUrgence;
+ 
+  let urgences = await Urgence.findByPk(idUrgence)
+  let mecaniciens = await Mecanicien.findByPk(idMecanicien)
 
-  let urgences = await Urgence.findOne({
-    id: idUrgence
-  });
 
   urgences.id_mecanicien = idMecanicien;
-  urgences.Etat = 2; // 3 Mecanicien
+  mecaniciens.idUrgence = idUrgence;
+  
+  urgences.Etat = 3; // 3 Mecanicien
+
   
   await urgences.save();
 
   return res.status(200).send(urgences);
+
 };
 
 module.exports = {

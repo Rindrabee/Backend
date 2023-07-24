@@ -49,6 +49,9 @@ module.exports = (sequelize, DataTypes) => {
         id_garage: {
             type: DataTypes.INTEGER
         },
+        id_urgence: {
+            type: DataTypes.INTEGER
+        }
 
     })
 
