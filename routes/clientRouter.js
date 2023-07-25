@@ -22,6 +22,10 @@ router.get('/session',  clientController.session)
 
 
 
+
+
+router.put('/inscriregarage/:id', clientController.inscriregarage)
+
 router.get('/getOneClient/:id' ,clientController.getOneClient)
 
 router.put('/updateClient/:id', clientController.updateClient)

@@ -8,5 +8,8 @@ router.get('/listermessage', messageController.listermessage)
 
 router.get('/listermessage2', messageController.listermessage2)
 
+router.delete('/deletemessage2', messageController.deletemessage)
+
+
 
 module.exports = router

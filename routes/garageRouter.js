@@ -31,6 +31,16 @@ router.put('/acceptmec/:id', garageController.acceptmec)
 
 router.put('/reffusermec/:id', garageController.reffusermec)
 
+
+router.put('/acceptcli/:id', garageController.acceptcli)
+
+router.put('/reffusercli/:id', garageController.reffusercli)
+
+
+router.put('/bloquerclient/:id', garageController.bloquerclient)
+
+
+
 router.put('/bloquergarage/:id', garageController.bloquergarage)
 
 router.put('/bloquermec/:id', garageController.bloquermec)

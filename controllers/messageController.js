@@ -4,6 +4,7 @@ const db = require('../models');
 // create main Model
 const Message = db.messages;
 const Message2 = db.messages2;
+const Mecanicien = db.mecaniciens;
 
 const listermessage = async (req, res) => {
     try {
@@ -25,7 +26,21 @@ const listermessage2 = async (req, res) => {
     }
 };
 
+
+// Supprimer message 
+
+const deletemessage = async (req, res) => {
+    try {
+        await Message2.destroy({ where: {} }); 
+        res.status(200).send('Tous les messages ont été supprimés !');
+    } catch (error) {
+        console.error('Une erreur s\'est produite lors de la suppression des messages :', error);
+        res.status(500).send('Une erreur s\'est produite lors de la suppression des messages.');
+    }
+};
+
 module.exports = {
     listermessage,
-    listermessage2
+    listermessage2,
+    deletemessage
 }

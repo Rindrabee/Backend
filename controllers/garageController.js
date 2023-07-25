@@ -13,6 +13,7 @@ const Garage = db.garages;
 const Voiture = db.voitures;
 const Urgence = db.urgences;
 const Mecanicien = db.mecaniciens;
+const Client = db.clients;
 
 //Transporter
 const transporter = nodemailer.createTransport({
@@ -499,17 +500,17 @@ const reffusermec = async (req, res) => {
 
 }
 
-// Accepter mécanicien
+// bloquer mécanicien
 const bloquermec = async (req, res) => {
   try {
     const id = req.params.id;
     const mecanicien = await Mecanicien.findByPk(id);
 
-    if (!mecanicien) {
-      return res.status(404).send("Mecanicien not found");
-    }
+  if (!mecanicien) {
+    return res.status(404).send("Mecanicien not found");
+  }
     
-    mecanicien.Etat2 = null;
+  mecanicien.Etat2 = null;
     
    
   await mecanicien.save();
@@ -522,6 +523,79 @@ const bloquermec = async (req, res) => {
 }
 
 }
+
+
+// Accepter client
+const acceptcli = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const client = await Client.findByPk(id);
+
+    if (!client) {
+      return res.status(404).send("Client not found");
+    }
+    
+    client.Etat2 = 1;
+    
+   
+  await client.save();
+
+  res.status(200).send(client);
+
+  } catch (error) {
+  console.error(error);
+  res.status(500).send("Internal Server Error");
+}
+
+}
+
+// Reffuser client
+const reffusercli = async (req, res) => {
+  try {
+  const id = req.params.id;
+  const client = await Client.findByPk(id);
+
+  if (!client) {
+    return res.status(404).send("Client not found");
+  }
+    
+  client.id_garage = null;
+    
+  await client.save();
+
+  res.status(200).send(client);
+
+  } catch (error) {
+  console.error(error);
+  res.status(500).send("Internal Server Error");
+}
+
+}
+
+
+// Bloquer client
+const bloquerclient = async (req, res) => {
+  try {
+  const id = req.params.id;
+  const client = await Client.findByPk(id);
+
+  if (!client) {
+    return res.status(404).send("Client not found");
+  }
+    
+  client.Etat2 = null;
+    
+  await client.save();
+
+  res.status(200).send(client);
+
+  } catch (error) {
+  console.error(error);
+  res.status(500).send("Internal Server Error");
+}
+
+}
+
 
 
 
@@ -569,5 +643,8 @@ module.exports = {
   getAllUrgenceGarage,
   acceptmec,
   reffusermec,
-  bloquermec
+  bloquermec,
+  acceptcli,
+  reffusercli,
+  bloquerclient
 }

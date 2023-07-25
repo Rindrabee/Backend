@@ -458,9 +458,31 @@ const bloquerclient = async (req, res) => {
     } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");
-}
+    }
 }
 
+// s'inscire dans une garage
+const inscriregarage = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const client = await Client.findByPk(id);
+
+    if (!client) {
+      return res.status(404).send("Client not found");
+    }
+    
+    client.id_garage = req.body.id_garage;
+    
+   
+    await client.save();
+
+    res.status(200).send(client);
+
+    } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+}
+}
 
 
 
@@ -491,5 +513,6 @@ module.exports = {
   accepterclient,
   bloquerclient,
   countClients,
-  counturgence
+  counturgence,
+  inscriregarage
 }

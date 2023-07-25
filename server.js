@@ -51,6 +51,7 @@ const routepass3  = require('./routes/passwordRouter3.js')
 const routemessage  = require('./routes/messageRouter.js')
 
 
+
 app.use('/api/clients', routerclt) 
 app.use('/api/admins', routeradm) 
 app.use('/api/garages', routergarage)
@@ -59,6 +60,7 @@ app.use('/api/password' , routepass)
 app.use('/api/password2' , routepass2)
 app.use('/api/password3' , routepass3)
 app.use('/api/messages' , routemessage)
+
 
 
 // MANAO RESAKA SOCKET NA MESSAGE

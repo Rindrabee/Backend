@@ -28,4 +28,9 @@ router.post('/redirectToGarage', adminController.redirectToGarage)
 
 router.post('/redirectToMecanicien', adminController.redirectToMecanicien)
 
+router.delete('/supprimerurgence/:id', adminController.deleteurgence)
+
+
+
+
 module.exports = router

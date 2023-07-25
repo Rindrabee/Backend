@@ -174,6 +174,17 @@ const redirectToMecanicien = async (req, res) => {
 
 };
 
+// Supprimer urgences
+
+
+const deleteurgence = async (req, res) => {
+  let id = req.params.id
+  await Urgence.destroy({ where: { id: id }} )
+  res.status(200).send('Urgence supprimé !')
+}
+
+
+
 module.exports = {
   login,
   logout,
@@ -186,5 +197,6 @@ module.exports = {
   profilegarage,
   detailurgence,
   redirectToGarage,
-  redirectToMecanicien
+  redirectToMecanicien,
+  deleteurgence
 }
