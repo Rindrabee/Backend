@@ -49,7 +49,7 @@ const routepass  = require('./routes/passwordRouter.js')
 const routepass2  = require('./routes/passwordRouter2.js')
 const routepass3  = require('./routes/passwordRouter3.js')
 const routemessage  = require('./routes/messageRouter.js')
-
+const routerendez  = require('./routes/rendezRouter.js')
 
 
 app.use('/api/clients', routerclt) 
@@ -60,6 +60,7 @@ app.use('/api/password' , routepass)
 app.use('/api/password2' , routepass2)
 app.use('/api/password3' , routepass3)
 app.use('/api/messages' , routemessage)
+app.use('/api/rendes' , routerendez)
 
 
 

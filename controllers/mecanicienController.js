@@ -376,7 +376,7 @@ const inscriregarage = async (req, res) => {
     }
     
     mecanicien.id_garage = req.body.id_garage;
-    
+    mecanicien.Etat2 = null
    
     await mecanicien.save();
 

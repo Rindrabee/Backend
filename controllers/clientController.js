@@ -204,7 +204,7 @@ const addClient = async (req, res) => {
 };
 
 
-//Ajouter un nouveau client
+//Ajouter un nouveau requette d'urgence
 
 const ajouterurgence = async (req, res) => {
 
@@ -472,7 +472,7 @@ const inscriregarage = async (req, res) => {
     }
     
     client.id_garage = req.body.id_garage;
-    
+    client.Etat2 = null
    
     await client.save();
 
