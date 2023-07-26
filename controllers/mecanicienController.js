@@ -326,6 +326,23 @@ const acceptermecanicien = async (req, res) => {
     if (!mecanicien) {
       return res.status(404).send("Mecanicien not found");
     }
+
+    
+    const mailOptions = {
+      from: 'garagetahinalisoa@gmail.com',
+      to: mecanicien.Email,
+      subject: 'Bienvenue',
+      text: `Bonjour, nous avons bien reçu votre demande d'adhésion sur notre site web, et nous vous félicitons pour avoir été accepté(e).` 
+    }
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if(error) {
+        console.error(error);
+        res.send('Il y a une erreur sur l/envoie de mail');
+      } else {
+        res.send({ statut:true, msg: 'Email envoyer' });
+      }
+    })
     
     mecanicien.Etat = 1;
     

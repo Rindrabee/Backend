@@ -4,6 +4,7 @@ const db = require('../models');
 // create main Model
 const Message = db.messages;
 const Message2 = db.messages2;
+const Message3 = db.messages3;
 const Mecanicien = db.mecaniciens;
 
 const listermessage = async (req, res) => {
@@ -26,6 +27,17 @@ const listermessage2 = async (req, res) => {
     }
 };
 
+// Lister message 3 
+const listermessage3 = async (req, res) => {
+    try {
+        const messages3 = await Message3.findAll(); 
+        res.json(messages3);
+    } catch(error) {
+        res.status(500).json({ error: 'Erreur lors de la récupération' });
+        console.log(error);
+    }
+};
+
 
 // Supprimer message 
 
@@ -42,5 +54,6 @@ const deletemessage = async (req, res) => {
 module.exports = {
     listermessage,
     listermessage2,
-    deletemessage
+    deletemessage,
+    listermessage3
 }

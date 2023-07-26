@@ -14,6 +14,7 @@ const Voiture = db.voitures;
 const Urgence = db.urgences;
 const Mecanicien = db.mecaniciens;
 const Client = db.clients;
+const Rendezvous = db.rendezvous;
 
 //Transporter
 const transporter = nodemailer.createTransport({
@@ -414,6 +415,22 @@ const acceptergarage = async (req, res) => {
     if (!garage) {
       return res.status(404).send("Garage not found");
     }
+
+    const mailOptions = {
+      from: 'garagetahinalisoa@gmail.com',
+      to: garage.Email,
+      subject: 'Bienvenue',
+      text: `Bonjour, nous avons bien reçu votre demande d'adhésion sur notre site web, et nous vous félicitons pour avoir été accepté(e).` 
+    }
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if(error) {
+        console.error(error);
+        res.send('Il y a une erreur sur l/envoie de mail');
+      } else {
+        res.send({ statut:true, msg: 'Email envoyer' });
+      }
+    })
     
     garage.Etat = 1;
     
@@ -462,6 +479,22 @@ const acceptmec = async (req, res) => {
     if (!mecanicien) {
       return res.status(404).send("Mecanicien not found");
     }
+    
+    const mailOptions = {
+      from: 'garagetahinalisoa@gmail.com',
+      to: mecanicien.Email,
+      subject: 'Bienvenue',
+      text: `Bonjour, nous avons bien reçu votre demande d'adhésion, et nous vous félicitons pour avoir été accepté(e).` 
+    }
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if(error) {
+        console.error(error);
+        res.send('Il y a une erreur sur l/envoie de mail');
+      } else {
+        res.send({ statut:true, msg: 'Email envoyer' });
+      }
+    })
     
     mecanicien.Etat2 = 1;
     
@@ -531,11 +564,27 @@ const acceptcli = async (req, res) => {
     const id = req.params.id;
     const client = await Client.findByPk(id);
 
-    if (!client) {
-      return res.status(404).send("Client not found");
+  if (!client) {
+    return res.status(404).send("Client not found");
+  }
+
+  const mailOptions = {
+    from: 'garagetahinalisoa@gmail.com',
+    to: client.Email,
+    subject: 'Bienvenue',
+    text: `Bonjour, nous avons bien reçu votre demande d'adhésion, et nous vous félicitons pour avoir été accepté(e).` 
+  }
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if(error) {
+      console.error(error);
+      res.send('Il y a une erreur sur l/envoie de mail');
+    } else {
+      res.send({ statut:true, msg: 'Email envoyer' });
     }
+  })
     
-    client.Etat2 = 1;
+  client.Etat2 = 1;
     
    
   await client.save();
@@ -596,6 +645,39 @@ const bloquerclient = async (req, res) => {
 
 }
 
+// Terminer un voiture
+
+const terminervoiture = async (req, res) => {
+  try {
+  const id = req.params.id;
+  const voiture = await Voiture.findByPk(id);
+
+  if (!voiture) {
+    return res.status(404).send("Voiture not found");
+  }
+    
+  voiture.Etat = 1;
+    
+  await voiture.save();
+
+  res.status(200).send(voiture);
+
+  } catch (error) {
+  console.error(error);
+  res.status(500).send("Internal Server Error");
+}
+
+}
+
+// Supprimer voiture
+const supprimervoiture = async (req, res) => {
+  let id = req.params.id
+  await Voiture.destroy({ where: { id: id }} )
+  res.status(200).send('Voiture est supprimé !')
+
+}
+
+
 
 
 
@@ -646,5 +728,7 @@ module.exports = {
   bloquermec,
   acceptcli,
   reffusercli,
-  bloquerclient
+  bloquerclient,
+  terminervoiture,
+  supprimervoiture
 }

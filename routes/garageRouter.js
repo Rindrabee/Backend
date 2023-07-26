@@ -40,7 +40,6 @@ router.put('/reffusercli/:id', garageController.reffusercli)
 router.put('/bloquerclient/:id', garageController.bloquerclient)
 
 
-
 router.put('/bloquergarage/:id', garageController.bloquergarage)
 
 router.put('/bloquermec/:id', garageController.bloquermec)
@@ -48,5 +47,12 @@ router.put('/bloquermec/:id', garageController.bloquermec)
 router.put('/deletegarage/:id', garageController.deletegarage)
 
 router.get('/getAllUrgenceGarage', garageController.getAllUrgenceGarage)
+
+
+router.put('/terminervoiture/:id', garageController.terminervoiture)
+
+
+router.put('/supprimervoiture/:id', garageController.supprimervoiture)
+
 
 module.exports = router

@@ -113,6 +113,30 @@ io.on('connection', (socket) => {
       }
     });
 
+      // Discussion garage et mecaniciens
+      socket.on('mandefa message2', async (data) => {
+        console.log('Message received:', data);
+    
+        try {
+        // Création d'une nouvelle entrée dans la table des messages avec Sequelize
+        const message = await db.messages3.create({
+          Text: data.Text,
+          id_sendermecanicien: data.id_sendermecanicien,
+          id_receivedmecanicien: data.id_receivedmecanicien,
+          id_sendergarage: data.id_sendergarage,
+          id_receivedgarage: data.id_receivedgarage,
+        });
+    
+        console.log('Message saved to database:', message);
+    
+        
+        // Envoi du message à tous les utilisateurs connectés
+        io.emit('chat message', message);
+        } catch (error) {
+          console.error('Error saving message to database:', error);
+        }
+      });
+
 
   
     socket.on('disconnect', () => {
