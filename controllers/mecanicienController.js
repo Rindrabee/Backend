@@ -407,6 +407,24 @@ const inscriregarage = async (req, res) => {
 
 
 
+
+const supprimeidurgence = async (req, res) => {
+  try {
+   
+    await Mecanicien.sync();
+
+    await Mecanicien.update({ id_urgence: null }, { where: {} });
+
+   
+    res.status(200).json({ message: 'Toutes les données ont été supprimées.' });
+  } catch (error) {
+   
+    res.status(500).json({ error: 'Une erreur est survenue lors de la suppression des données.' });
+  }
+};
+
+
+
 // 5. Supprimer mecanicien par ID
 
 const deletemecanicien = async (req, res) => {
@@ -429,5 +447,6 @@ module.exports = {
   bloquermecanicien,
   deletemecanicien,
   countMecaniciens,
-  inscriregarage
+  inscriregarage,
+  supprimeidurgence
 }

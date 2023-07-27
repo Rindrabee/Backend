@@ -12,6 +12,8 @@ router.get('/listermessage3', messageController.listermessage3)
 
 router.delete('/deletemessage2', messageController.deletemessage)
 
+router.delete('/deletemessage3', messageController.deletemessage3)
+
 
 
 module.exports = router

@@ -51,9 +51,24 @@ const deletemessage = async (req, res) => {
     }
 };
 
+
+// Supprimer message 3
+
+const deletemessage3 = async (req, res) => {
+    try {
+        await Message3.destroy({ where: {} }); 
+        res.status(200).send('Tous les messages ont été supprimés !');
+    } catch (error) {
+        console.error('Une erreur s\'est produite lors de la suppression des messages :', error);
+        res.status(500).send('Une erreur s\'est produite lors de la suppression des messages.');
+    }
+};
+
+
 module.exports = {
     listermessage,
     listermessage2,
     deletemessage,
-    listermessage3
+    listermessage3,
+    deletemessage3
 }

@@ -28,6 +28,8 @@ router.put('/bloquermecanicien/:id', mecanicienController.bloquermecanicien)
 
 router.put('/deletemecanicien/:id', mecanicienController.deletemecanicien)
 
+router.put('/supprimeidurgence', mecanicienController.supprimeidurgence)
+
 
 
 
