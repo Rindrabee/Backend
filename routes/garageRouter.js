@@ -55,4 +55,20 @@ router.put('/terminervoiture/:id', garageController.terminervoiture)
 router.put('/supprimervoiture/:id', garageController.supprimervoiture)
 
 
+router.get('/countRendezvousForConnectedGarage/:idGarage', garageController.countRendezvousForConnectedGarage)
+
+
+router.get('/nombredesmecaniciens/:idGarage', garageController.nombredesmecaniciens)
+
+
+router.get('/nombredesclients/:idGarage', garageController.nombredesclients)
+
+
+router.get('/nombredesvoiture/:idGarage', garageController.nombredesvoiture)
+
+
+router.get('/nombreurgence/:idGarage', garageController.nombreurgence)
+
+
+
 module.exports = router

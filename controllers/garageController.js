@@ -678,10 +678,6 @@ const supprimervoiture = async (req, res) => {
 }
 
 
-
-
-
-
 // 5. Supprimer garage par ID
 
 const deletegarage = async (req, res) => {
@@ -707,6 +703,86 @@ const getAllUrgenceGarage = async (req, res) => {
   res.status(200).send(urgences);
 }
 
+// Compter les liste de rendez-vous.
+const countRendezvousForConnectedGarage = async (req, res) => {
+  const idGarage = req.params.idGarage;
+
+  try {
+    const rendezvousCount = await Rendezvous.count({
+      where: { id_garage: idGarage }
+    });
+
+    res.status(200).send({ grg: { id: idGarage }, rendezvouscompte: rendezvousCount });
+  } catch (error) {
+    res.status(500).send({ error: "Une erreur s'est produite lors du comptage des rendez-vous." });
+  }
+};
+
+
+
+// Compter les listes des mecaniciens dans une garage
+const nombredesmecaniciens = async (req, res) => {
+  const idGarage = req.params.idGarage;
+
+  try {
+    const garagecount = await Mecanicien.count({
+      where: { id_garage: idGarage }
+    });
+
+    res.status(200).send({ grg: { id: idGarage }, mecaniciens: garagecount });
+  } catch (error) {
+    res.status(500).send({ error: "Une erreur s'est produite lors du comptage des mecaniciens." });
+  }
+};
+
+// Compter les listes des clients dans le garage
+
+const nombredesclients = async (req, res) => {
+  const idGarage = req.params.idGarage;
+
+  try {
+    const clientscount = await Client.count({
+      where: { id_garage: idGarage }
+    });
+
+    res.status(200).send({ grg: { id: idGarage }, client: clientscount });
+  } catch (error) {
+    res.status(500).send({ error: "Une erreur s'est produite lors du comptage des clients." });
+  }
+};
+
+// Compter les listes des voitures dans le garage
+const nombredesvoiture = async (req, res) => {
+  const idGarage = req.params.idGarage;
+
+  try {
+    const voitureCount = await Voiture.count({
+    where: { Idgarage : idGarage }
+    });
+
+    res.status(200).send({ grg: { id: idGarage }, voiture: voitureCount });
+  } catch (error) {
+    res.status(500).send({ error: "Une erreur s'est produite lors du comptage des voitures." });
+  }
+};
+
+// Liste des rendez-vous dans le garages
+const nombreurgence = async (req, res) => {
+  const idGarage = req.params.idGarage;
+
+  try {
+    const urgencecount = await Urgence.count({
+      where: { id_garage: idGarage }
+  });
+
+  res.status(200).send({ grg: { id: idGarage }, urgence: urgencecount });
+  } catch (error) {
+    res.status(500).send({ error: "Une erreur s'est produite lors du comptage des urgences." });
+  }
+};
+
+
+
 module.exports = {  
   login,
   addGarage,
@@ -730,5 +806,10 @@ module.exports = {
   reffusercli,
   bloquerclient,
   terminervoiture,
-  supprimervoiture
+  supprimervoiture,
+  countRendezvousForConnectedGarage,
+  nombredesmecaniciens,
+  nombredesclients,
+  nombredesvoiture,
+  nombreurgence
 }

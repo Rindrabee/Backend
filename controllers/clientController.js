@@ -485,8 +485,6 @@ const inscriregarage = async (req, res) => {
 }
 
 
-
-
 // 5. Supprimer client par ID
 
 const deleteClient = async (req, res) => {
