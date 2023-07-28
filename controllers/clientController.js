@@ -11,7 +11,7 @@ const { any } = require('joi');
 
 // TAm za nitesta message tam phone
 const accountSid = 'AC84dd8c6a73f41515d2d6238dcc981f0f'; 
-const authToken = '11cb6083047f6ef547ebf7fedfe0d668'; 
+const authToken = 'a792458cebad462d9085181b6d88273c'; 
 const izaho = require('twilio')(accountSid, authToken);
 
 
