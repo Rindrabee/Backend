@@ -51,6 +51,9 @@ module.exports = (sequelize, DataTypes) => {
         },
         id_urgence: {
             type: DataTypes.INTEGER
+        },
+        point:{
+            type: DataTypes.INTEGER
         }
 
     })

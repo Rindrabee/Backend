@@ -26,6 +26,10 @@ router.put('/updateMecanicien/:id', mecanicienController.updateMecanicien)
 
 router.put('/acceptermecanicien/:id', mecanicienController.acceptermecanicien)
 
+router.put('/ajouterpoint/:id', mecanicienController.ajouterpoint)
+
+router.put('/diminuerpoint/:id', mecanicienController.diminuerpoint)
+
 router.put('/inscriregarage/:id', mecanicienController.inscriregarage)
 
 router.put('/bloquermecanicien/:id', mecanicienController.bloquermecanicien)

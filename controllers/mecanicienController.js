@@ -20,8 +20,8 @@ const transporter = nodemailer.createTransport({
       user: 'garagetahinalisoa@gmail.com',
       clientId: '644760103972-mo2ahkelp1i9i4t8v6655chbsod8tukr.apps.googleusercontent.com',
       clientSecret: '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',
-      refreshToken: '1//04gJSg8jYYPDaCgYIARAAGAQSNwF-L9IrT1xI-Oi_lNS6pNKj7GTwKAgsa3gA4zNrjy7Nz13qlpPo0VfWOU8gy5SzJRVnJ87DHPk',
-      accessToken: 'ya29.a0AbVbY6MI0KkDKxVctveFjtgvNyHAXIklSIagGRDubzYZVCuN2shGkRMydOyHrThmbKya3lYI27uDWYctX5bRxXE0u4yZpUNIVa54Gb3cQg_Uab0ygIlEizmEIpXrrTGZmXqq1hecru5FZ5rgOT9-3cqrCaCpaCgYKATASARISFQFWKvPl3ZNqGCT8PTYN4n0GsDivDA0163'
+      refreshToken: '1//04MD66QBz9KuxCgYIARAAGAQSNwF-L9IrpAc4S36Fvhb7ZkxGu5EmwTXtytAk9hjUNaFZYAA0xpLq95Dnwng1hsyKqmaCeSkD-NQ',
+      accessToken: 'ya29.a0AbVbY6MyfFP8pXzypYfjy2pCftt9RxIqZr5_sXX9FZTXmJMySsEq45Scv3WXpilhIPdz4frv_pybKHO_UtS7AxmcJMCNhwKWkOc0N5shIyfOPZEXVSf7DcU0xAsdiod3bIUccUCbPpbKKeOHIIbmL8E6-ZUDaCgYKAZISARISFQFWKvPlyz_riUku6KsUtiDC45_k9g0163'
     },
     tls: {
       rejectUnauthorized: false
@@ -427,7 +427,7 @@ const inscriregarage = async (req, res) => {
 
 
 
-
+// Suprrimer une urgence
 const supprimeidurgence = async (req, res) => {
   try {
    
@@ -453,6 +453,62 @@ const deletemecanicien = async (req, res) => {
   res.status(200).send('Le mecanicien est supprimé !')
 
 }
+
+
+// Ajouter le point
+
+const ajouterpoint = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const mecanicien = await Mecanicien.findByPk(id);
+
+    if (!mecanicien) {
+      return res.status(404).send("Mecanicien not found");
+    }
+    
+  mecanicien.point += 1;
+    
+   
+  await mecanicien.save();
+
+  res.status(200).send(mecanicien);
+
+  } catch (error) {
+  console.error(error);
+  res.status(500).send("Internal Server Error");
+}
+
+}
+
+
+// Diminuer point
+
+const diminuerpoint = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const mecanicien = await Mecanicien.findByPk(id);
+
+    if (!mecanicien) {
+      return res.status(404).send("Mecanicien not found");
+    }
+    
+  mecanicien.point -= 1;
+    
+   
+  await mecanicien.save();
+
+  res.status(200).send(mecanicien);
+
+  } catch (error) {
+  console.error(error);
+  res.status(500).send("Internal Server Error");
+  
+}
+
+}
+
+
+
   
 
 module.exports = {  
@@ -469,5 +525,7 @@ module.exports = {
   countMecaniciens,
   inscriregarage,
   supprimeidurgence,
-  searchMecanicienByName
+  searchMecanicienByName,
+  ajouterpoint,
+  diminuerpoint
 }
