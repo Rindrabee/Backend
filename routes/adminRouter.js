@@ -30,6 +30,8 @@ router.post('/redirectToMecanicien', adminController.redirectToMecanicien)
 
 router.delete('/supprimerurgence/:id', adminController.deleteurgence)
 
+router.delete('/deleteurgence1/:id', adminController.deleteurgence1)
+
 
 
 

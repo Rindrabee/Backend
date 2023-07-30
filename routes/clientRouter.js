@@ -8,6 +8,8 @@ router.post('/ajouterurgence', clientController.ajouterurgence)
 
 router.get('/allClients', clientController.getAllClients)
 
+router.get('/searchClientByName/:Nom', clientController.searchClientByName)
+
 router.post('/login', clientController.login)
 
 router.post('/logout', clientController.logout)

@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const randomText = require('random-text-generator');
 const { any } = require('joi');
+const { Op } = require('sequelize');
 
 
 // create main Model
@@ -381,6 +382,25 @@ const bloquermecanicien = async (req, res) => {
 
 }
 
+// Rechercher les mecaniciens : 
+const searchMecanicienByName = async (req, res) => {
+  const { Nom } = req.params;
+  try {
+    let mecaniciens = await Mecanicien.findAll({
+      where: {
+        Nom: {
+          [Op.like]: `%${Nom}%`
+        }
+      }
+    });
+    res.status(200).send(mecaniciens);
+  } catch (error) {
+    res.status(500).send("Une erreur est survenue lors de la recherche des mecaniciens par nom.");
+  }
+};
+
+
+
 
 // s'inscire dans une garage
 const inscriregarage = async (req, res) => {
@@ -448,5 +468,6 @@ module.exports = {
   deletemecanicien,
   countMecaniciens,
   inscriregarage,
-  supprimeidurgence
+  supprimeidurgence,
+  searchMecanicienByName
 }

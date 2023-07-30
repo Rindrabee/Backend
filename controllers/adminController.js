@@ -1,7 +1,12 @@
 const db = require('../models');
-const pageadmin = require('../models/adminModel');
-const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 const secretKey = 'ma_clé_secrète';
+const pageclient = require('../models/clientModel');
+const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
+const randomText = require('random-text-generator');
+const { any } = require('joi');
+const { Op } = require('sequelize');
 
 
 // create main Model
@@ -10,6 +15,23 @@ const Urgence = db.urgences;
 const Client = db.clients;
 const Mecanicien = db.mecaniciens;
 const Garage = db.garages;
+
+
+//Transporter
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    type: 'OAuth2',
+    user: 'garagetahinalisoa@gmail.com',
+    clientId: '644760103972-mo2ahkelp1i9i4t8v6655chbsod8tukr.apps.googleusercontent.com',
+    clientSecret: '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',
+    refreshToken: '1//04MD66QBz9KuxCgYIARAAGAQSNwF-L9IrpAc4S36Fvhb7ZkxGu5EmwTXtytAk9hjUNaFZYAA0xpLq95Dnwng1hsyKqmaCeSkD-NQ',
+    accessToken: 'ya29.a0AbVbY6MyfFP8pXzypYfjy2pCftt9RxIqZr5_sXX9FZTXmJMySsEq45Scv3WXpilhIPdz4frv_pybKHO_UtS7AxmcJMCNhwKWkOc0N5shIyfOPZEXVSf7DcU0xAsdiod3bIUccUCbPpbKKeOHIIbmL8E6-ZUDaCgYKAZISARISFQFWKvPlyz_riUku6KsUtiDC45_k9g0163'
+  },
+  tls: {
+    rejectUnauthorized: false
+  }
+});
 
 
 const login = async (req, res) => {
@@ -179,8 +201,42 @@ const redirectToMecanicien = async (req, res) => {
 
 const deleteurgence = async (req, res) => {
   let id = req.params.id
+  const client = await Urgence.findByPk(id);
+
+  if (!client) {
+    return res.status(404).send("Client not found");
+  }
+
+  const mailOptions = {
+    from: 'garagetahinalisoa@gmail.com',
+    to: client.Email,
+    subject: 'Excuse',
+    text: `Désolé car nous ne pouvons pas vous rejoindre, vraiment désolé.` 
+  }
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if(error) {
+      console.error(error);
+      res.send('Il y a une erreur sur l/envoie de mail');
+    } else {
+      res.send({ statut:true, msg: 'Email envoyer' });
+    }
+  })
+
+
   await Urgence.destroy({ where: { id: id }} )
   res.status(200).send('Urgence supprimé !')
+
+
+}
+
+
+// urgence terminer
+const deleteurgence1 = async (req, res) => {
+  let id = req.params.id
+  await Urgence.destroy({ where: { id: id }} )
+  res.status(200).send('Le urgence est supprimé !')
+
 }
 
 
@@ -198,5 +254,6 @@ module.exports = {
   detailurgence,
   redirectToGarage,
   redirectToMecanicien,
-  deleteurgence
+  deleteurgence,
+  deleteurgence1
 }

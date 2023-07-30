@@ -70,5 +70,8 @@ router.get('/nombredesvoiture/:idGarage', garageController.nombredesvoiture)
 router.get('/nombreurgence/:idGarage', garageController.nombreurgence)
 
 
+router.get('/searchGarageByName/:Nom', garageController.searchGarageByName)
+
+
 
 module.exports = router
