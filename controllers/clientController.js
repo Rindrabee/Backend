@@ -12,8 +12,8 @@ const { Op } = require('sequelize');
 
 
 // TAm za nitesta message tam phone
-const accountSid = 'AC84dd8c6a73f41515d2d6238dcc981f0f'; 
-const authToken = 'a792458cebad462d9085181b6d88273c'; 
+const accountSid = 'AC76ce70cc2a679c65ed3c0613d050496b'; 
+const authToken = '2fe0ed0229de535c1260c7ed31313b32'; 
 const izaho = require('twilio')(accountSid, authToken);
 
 
@@ -30,8 +30,8 @@ const transporter = nodemailer.createTransport({
     user: 'garagetahinalisoa@gmail.com',
     clientId: '644760103972-mo2ahkelp1i9i4t8v6655chbsod8tukr.apps.googleusercontent.com',
     clientSecret: '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',
-    refreshToken: '1//04MD66QBz9KuxCgYIARAAGAQSNwF-L9IrpAc4S36Fvhb7ZkxGu5EmwTXtytAk9hjUNaFZYAA0xpLq95Dnwng1hsyKqmaCeSkD-NQ',
-    accessToken: 'ya29.a0AbVbY6MyfFP8pXzypYfjy2pCftt9RxIqZr5_sXX9FZTXmJMySsEq45Scv3WXpilhIPdz4frv_pybKHO_UtS7AxmcJMCNhwKWkOc0N5shIyfOPZEXVSf7DcU0xAsdiod3bIUccUCbPpbKKeOHIIbmL8E6-ZUDaCgYKAZISARISFQFWKvPlyz_riUku6KsUtiDC45_k9g0163'
+    refreshToken: '1//04RuOA6VJ9jMdCgYIARAAGAQSNwF-L9IrwyjgGKomd6D-oMiAQHv0M8UHGoX_v0vaklahObTmhV6yvXya7IjqLtjb_eY5y6mR3kE',
+    accessToken: 'ya29.a0AfB_byBBuiIQ_h0W2QTHo2T5a0jBb32PJ4magUwfPlFKDv4xLFN7roKPDqrSQT-Waja84sfDWY1FkXotbC7E-UKDnLSFe7cnJMBGaKXHZX9RWi4-EUJNQGwj-gptmebzJgrkAFFbFQd6c7B4aZZHpJLJW2haaCgYKAWASARISFQHsvYlsTHSSAX2mvYhlbCv49f1xTA0163'
   },
   tls: {
     rejectUnauthorized: false
@@ -256,7 +256,7 @@ const SMS = async (req, res) => {
   izaho.messages
     .create({
       body: "Voici votre mot de passe Mr : "  + admin.Password,
-      from: '+15312344463', // Remplacez par votre numéro de téléphone Twilio
+      from: '+16672707436', // Remplacez par votre numéro de téléphone Twilio
       to: destinataire
     })
     .then(message => {
