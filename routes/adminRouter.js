@@ -32,6 +32,9 @@ router.delete('/supprimerurgence/:id', adminController.deleteurgence)
 
 router.delete('/deleteurgence1/:id', adminController.deleteurgence1)
 
+router.put('/garagepasdispo/:id', adminController.garagepasdispo)
+
+router.put('/mecapasdispo/:id', adminController.mecapasdispo)
 
 
 

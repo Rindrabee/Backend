@@ -25,8 +25,8 @@ const transporter = nodemailer.createTransport({
     user: 'garagetahinalisoa@gmail.com',
     clientId: '644760103972-mo2ahkelp1i9i4t8v6655chbsod8tukr.apps.googleusercontent.com',
     clientSecret: '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',
-    refreshToken: '1//04RuOA6VJ9jMdCgYIARAAGAQSNwF-L9IrwyjgGKomd6D-oMiAQHv0M8UHGoX_v0vaklahObTmhV6yvXya7IjqLtjb_eY5y6mR3kE',
-    accessToken: 'ya29.a0AfB_byBBuiIQ_h0W2QTHo2T5a0jBb32PJ4magUwfPlFKDv4xLFN7roKPDqrSQT-Waja84sfDWY1FkXotbC7E-UKDnLSFe7cnJMBGaKXHZX9RWi4-EUJNQGwj-gptmebzJgrkAFFbFQd6c7B4aZZHpJLJW2haaCgYKAWASARISFQHsvYlsTHSSAX2mvYhlbCv49f1xTA0163'
+    refreshToken: '1//041rysmsLybaRCgYIARAAGAQSNwF-L9IrDi57Mw8XoA7zMPeVOa5jPvLayX8OLvbcO1dL6JB83nZbYxA5cP58SoYIxu2cOJzBK5E',
+    accessToken: 'ya29.a0AfB_byBtYCP1x86lHeixyAhlzh9WbLO5RQ_NirBAyLmpn9H9N3jh2G6vNnazjU34FAgdyY0oQKfJq7svSmzhZlUIpXp5hFOO6xnXjpUnthXkoz0bs10oc9njO1y5CAy2dnIlU30tnBwv6mPAude3JklLlQcG98nd6EsgkQaCgYKAVUSARISFQHsvYlsOh1H8r7x0owI-_Zk5xvJIQ0173'
   },
   tls: {
     rejectUnauthorized: false
@@ -239,6 +239,107 @@ const deleteurgence1 = async (req, res) => {
 
 }
 
+// Garage pas disponible
+const garagepasdispo = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const urgence = await Urgence.findByPk(id);
+
+    if (!urgence) {
+      return res.status(404).send("Urgence not found");
+    }
+
+    const mailOptions = {
+      from: 'garagetahinalisoa@gmail.com',
+      to: 'tahinalisoanirina@gmail.com',
+      subject: 'Lettre d`excuse',
+      text: `Bonjour, nous avons bien reçu votre transfert d'urgence mais nous sommes vraiment désolé car nous sommes très occupé aujourd'hui` 
+    }
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if(error) {
+        console.error(error);
+        res.send('Il y a une erreur sur l/envoie de mail');
+      } else {
+        res.send({ statut:true, msg: 'Email envoyer' });
+      }
+    })
+    
+    urgence.Etat = null;
+    urgence.id_garage = null;
+   
+    await urgence.save();
+
+    res.status(200).send(urgence);
+
+    } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+}
+
+}
+
+
+// Mécanicien pas disponible
+const mecapasdispo = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const urgence = await Urgence.findByPk(id);
+
+    if (!urgence) {
+      return res.status(404).send("Urgence not found");
+    }
+
+    // Récupérer l'ID du garage associé à l'urgence
+    const garageId = urgence.id_garage;
+
+    // Rechercher les informations du garage dans la table "garage"
+    const garage = await Garage.findByPk(garageId);
+
+    if (!garage) {
+      return res.status(404).send("Garage not found");
+    }
+
+    // Récupérer l'adresse e-mail du garage
+    const garageEmail = garage.Email;
+
+    // Vérifier si l'adresse e-mail du garage est valide
+    if (!garageEmail) {
+      return res.status(400).send("Garage email not found or invalid");
+    }
+
+    const mailOptions = {
+      from: 'garagetahinalisoa@gmail.com',
+      to: garageEmail, // Utiliser l'adresse e-mail du garage
+      subject: 'Lettre d`excuse',
+      text: `Bonjour, je ne suis pas disponible pour recevoir cette urgence aujourd'hui`
+    }
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error(error);
+        return res.send('Il y a une erreur sur l/envoi de mail');
+      } else {
+        // Renvoyer une réponse après avoir envoyé l'e-mail
+        
+        urgence.Etat = 2;
+        urgence.id_mecanicien = null;
+        urgence.save().then(() => {
+          res.send({ statut: true, msg: 'Email envoyé et urgence sauvegardée' });
+        }).catch((err) => {
+          console.error(err);
+          res.status(500).send("Internal Server Error");
+        });
+      }
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+}
+
+
 
 
 module.exports = {
@@ -255,5 +356,7 @@ module.exports = {
   redirectToGarage,
   redirectToMecanicien,
   deleteurgence,
-  deleteurgence1
+  deleteurgence1,
+  garagepasdispo,
+  mecapasdispo
 }

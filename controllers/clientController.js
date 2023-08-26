@@ -10,10 +10,9 @@ const { Op } = require('sequelize');
 
 
 
-
-// TAm za nitesta message tam phone
-const accountSid = 'AC76ce70cc2a679c65ed3c0613d050496b'; 
-const authToken = '2fe0ed0229de535c1260c7ed31313b32'; 
+// Token pour le message
+const accountSid = 'AC84dd8c6a73f41515d2d6238dcc981f0f'; 
+const authToken = 'a093121cf32c54b6059479c9e8373e37'; 
 const izaho = require('twilio')(accountSid, authToken);
 
 
@@ -30,8 +29,8 @@ const transporter = nodemailer.createTransport({
     user: 'garagetahinalisoa@gmail.com',
     clientId: '644760103972-mo2ahkelp1i9i4t8v6655chbsod8tukr.apps.googleusercontent.com',
     clientSecret: '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',
-    refreshToken: '1//04RuOA6VJ9jMdCgYIARAAGAQSNwF-L9IrwyjgGKomd6D-oMiAQHv0M8UHGoX_v0vaklahObTmhV6yvXya7IjqLtjb_eY5y6mR3kE',
-    accessToken: 'ya29.a0AfB_byBBuiIQ_h0W2QTHo2T5a0jBb32PJ4magUwfPlFKDv4xLFN7roKPDqrSQT-Waja84sfDWY1FkXotbC7E-UKDnLSFe7cnJMBGaKXHZX9RWi4-EUJNQGwj-gptmebzJgrkAFFbFQd6c7B4aZZHpJLJW2haaCgYKAWASARISFQHsvYlsTHSSAX2mvYhlbCv49f1xTA0163'
+    refreshToken: '1//041rysmsLybaRCgYIARAAGAQSNwF-L9IrDi57Mw8XoA7zMPeVOa5jPvLayX8OLvbcO1dL6JB83nZbYxA5cP58SoYIxu2cOJzBK5E',
+    accessToken: 'ya29.a0AfB_byBtYCP1x86lHeixyAhlzh9WbLO5RQ_NirBAyLmpn9H9N3jh2G6vNnazjU34FAgdyY0oQKfJq7svSmzhZlUIpXp5hFOO6xnXjpUnthXkoz0bs10oc9njO1y5CAy2dnIlU30tnBwv6mPAude3JklLlQcG98nd6EsgkQaCgYKAVUSARISFQHsvYlsOh1H8r7x0owI-_Zk5xvJIQ0173'
   },
   tls: {
     rejectUnauthorized: false
@@ -256,7 +255,7 @@ const SMS = async (req, res) => {
   izaho.messages
     .create({
       body: "Voici votre mot de passe Mr : "  + admin.Password,
-      from: '+16672707436', // Remplacez par votre numéro de téléphone Twilio
+      from: '+15312344463', // Remplacez par votre numéro de téléphone Twilio
       to: destinataire
     })
     .then(message => {
@@ -431,10 +430,6 @@ const updateClient = async (req, res) => {
 };
 
 
-// update seulement le photo
-const updateClientPhoto = async (req, res) => {
-
-}
 
 // Accepter client 
 const accepterclient = async (req, res) => {
@@ -528,7 +523,6 @@ module.exports = {
   mdpcode,
   session,
   ajouterurgence,
-  updateClientPhoto,
   accepterclient,
   bloquerclient,
   countClients,
